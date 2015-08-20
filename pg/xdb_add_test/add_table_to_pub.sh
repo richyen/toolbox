@@ -1,1 +1,0 @@
-java -jar /usr/ppas-xdb-5.1/bin/edb-repcli.jar -addtablesintopub xdbtest -repsvrfile /usr/ppas-xdb-5.1/etc/xdb_repsvrfile.conf -tables public.archive_for_tokens -repgrouptype M
