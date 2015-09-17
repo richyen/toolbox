@@ -10,4 +10,4 @@ then
     CURRENT_TABLE=`cat ${SLONY_LOG} | grep ".*Table.*Copy" | sed -e "s:.*Copy(\(.*\)).*:\1:"`
 fi
 
-perl -e "printf(\"\%0.3f\n\",(${CURRRENT_TABLE}/$(NUM_TABLES})*100.0)"
+perl -e "printf(\"\%0.3f\n\",(${CURRRENT_TABLE}/${NUM_TABLES})*100.0)"
