@@ -39,7 +39,7 @@ public class runSQLFile {
 
     } catch (SQLException ex)
     {
-      System.out.println(ex);
+      ex.printStackTrace();
     }
 
     finally {
