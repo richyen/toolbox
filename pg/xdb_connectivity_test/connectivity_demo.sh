@@ -1,7 +1,8 @@
 #!/bin/bash
 
 set -x
-docker exec xdb1 java -jar /usr/ppas-xdb-5.1/bin/edb-repcli.jar -version
+# docker exec xdb1 java -jar /usr/ppas-xdb-5.1/bin/edb-repcli.jar -version # for XDB 5.1
+docker exec xdb1 java -jar /usr/ppas-xdb-6.0/bin/edb-repcli.jar -version # for XDB 6.0
 docker exec xdb1 /Desktop/show_servers.sh
 docker exec xdb1 /Desktop/check_values.sh
 docker exec xdb1 /Desktop/do_update.sh jeremy
