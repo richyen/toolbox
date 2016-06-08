@@ -1,8 +1,17 @@
 #!/bin/bash
 
 first=1
-# for i in `psql -Atc "select db_host from _edb_replicator_pub.erep_pub_database" xdb_ctl` # for XDB 5.1
-for i in `psql -Atc "select db_host from _edb_replicator_pub.xdb_pub_database"` # for XDB 6.0
+
+if [[ ${1} -eq 6 ]]
+then
+  TABLE="_edb_replicator_pub.xdb_pub_database"
+  DB=''
+else
+  TABLE="_edb_replicator_pub.erep_pub_database"
+  DB='xdb_ctl'
+fi
+
+for i in `psql -Atc "select db_host from ${TABLE}" ${DB}`
 do
 
  VAL=`psql -Atc "select rtrim(filler,' ') from pgbench_accounts where aid=100" -h $i`
