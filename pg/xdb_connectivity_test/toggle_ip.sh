@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+# set -x
 
 ACTION='add'
 IP='172.17.0.254'
@@ -15,5 +15,5 @@ then
   IP=${2}
 fi
 
-printf "\e[0;33m PERFORMING $1 ON eth0\n\e[0m"
-ifcfg eth0 $1 $2
+printf "\e[0;33m PERFORMING $1 ON IP ${IP} eth0\n\e[0m"
+ifcfg eth0 ${ACTION} ${IP}

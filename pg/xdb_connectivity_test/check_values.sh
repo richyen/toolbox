@@ -19,16 +19,16 @@ do
   if [[ $first -gt 0 ]]
   then
     correct=${VAL}
-    # printf "\e[0;33m MDN (host $i) value is '$correct'\n \e[0m"
+    printf "\e[0;33m MDN (host $i) value is '$correct'\n\e[0m"
   elif [[ ${correct} == ${VAL} ]]
   then
-    # printf "\e[0;32m Replicated $correct == $VAL on host $i \n \e[0m"
+    # printf "\e[0;32m Replicated $correct == $VAL on host $i \n\e[0m"
     first=0
   else
-    # printf "\e[0;31m NOT REPLICATED $correct != $VAL on host $i \n \e[0m"
+    # printf "\e[0;31m NOT REPLICATED $correct != $VAL on host $i \n\e[0m"
     ((num_fails++))
   fi
   first=0
 done
 
-echo "Failed ${num_fails} times"
+printf "\e[0;31m Failed ${num_fails} times\n\e[0m"

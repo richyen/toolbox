@@ -1,7 +1,7 @@
 #!/bin/bash
 
 VER=${1}
-set -x
+# set -x
 if [[ ${VER} -eq 6 ]]
 then
   psql -c "select * from _edb_replicator_pub.xdb_pub_database" # for XDB 6.0
