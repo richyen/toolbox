@@ -60,7 +60,6 @@ pg_ctl -D /tmp/5555/data stop
 
 echo 'Step 2. Check for sync status and recovery status of first standby[6666] before promoting it (check 7777 as well, just for sanity)'
 psql -p 6666 -c 'select pg_last_xlog_receive_location() "receive_location", pg_last_xlog_replay_location() "replay_location", pg_is_in_recovery() "recovery_status";'
-echo 'Check for sync status and recovery status of Second Standby[7777] before promoting it:'
 psql -p 7777 -c 'select pg_last_xlog_receive_location() "receive_location", pg_last_xlog_replay_location() "replay_location", pg_is_in_recovery() "recovery_status";'
 
 echo 'Step 3. Verify first standby is Streaming Replication-ready'
