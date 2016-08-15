@@ -54,7 +54,7 @@ cat /tmp/6666/data/postgresql.conf | grep "^max_wal_senders"
 cat /tmp/6666/data/postgresql.conf | grep "^wal_keep_segments"
 cat /tmp/6666/data/postgresql.conf | grep "^wal_log_hints"
 
-echo 'step 2. Perform failover with pg_ctl promote'
+echo 'Step 2. Perform failover with pg_ctl promote'
 pg_ctl -D /tmp/6666/data promote
 sleep 5
 psql -p 6666 -c "select pg_is_in_recovery();"
@@ -62,25 +62,25 @@ psql -p 6666 -c "select pg_is_in_recovery();"
 echo 'Step 3. Do clean shutdown of primary[5555] (-m fast or smart)'
 pg_ctl -D /tmp/5555/data -mf stop
 
-echo 'step 4. Simulate reality -- make some changes while in detached state'
+echo 'Step 4. Simulate reality -- make some changes while in detached state'
 psql -p6666 edb -c"select * from pg_stat_replication;"
 psql -p6666 edb -c"create table mc2 (id int);"
 psql -p6666 edb -c"insert into mc2 values (generate_series(1,100000));"
 pgbench -i -s 2 -p 6666
 
-echo 'step 5. Need a checkpoint to cause a real diversion'
+echo 'Step 5. Need a checkpoint to cause a real diversion'
 psql -p6666 edb -c"checkpoint"
 
 echo 'Step 6. Do pg_rewind'
 pg_rewind -P --source-server="host=127.0.0.1 port=6666" --target-pgdata=/tmp/5555/data
 
-echo 'Step 6. Create a recovery.conf file in the old master cluster (5555)'
+echo 'Step 7. Create a recovery.conf file in the old master cluster (5555)'
 echo "standby_mode='on'" > /tmp/5555/data/recovery.conf
 echo "primary_conninfo='host=localhost port=6666 user=repuser'" >> /tmp/5555/data/recovery.conf
 echo "restore_command='cp /tmp/arch/%f %p'" >> /tmp/5555/data/recovery.conf
 echo "recovery_target_timeline = 'latest'" >> /tmp/5555/data/recovery.conf
 
-echo 'Step 7. Start the old master which is now actually the slave of 6666'
+echo 'Step 8. Start the old master which is now actually the slave of 6666'
 rm -f /tmp/5555/data/postmaster.pid
 rm -f /tmp/5555/data/recovery.done
 rm -f /tmp/5555/data/backup_label.old
