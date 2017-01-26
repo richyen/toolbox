@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Possible use cases:
+# When users want to run the XDB Pub Server on another machine because:
+#    - Current host running pubserver is down
+#    - Moving to new hardware
+#    - Consolidate services onto one server
+#    - Change in MDN, and desire to keep pubserver running on MDN
+
 # Step 0 -- Set up replication cluster
 # ./xdb_mmr_demo.sh 6
 
