@@ -5,11 +5,12 @@
 # NOTE: This script assumes that edb-xdbpubserver and edb-xdbsubserver services are running on the same host
 # This script is to be run where the edb-xdbpubserver and edb-xdbsubserver services are running
 
+XDB_HOME=/usr/ppas-xdb-6.0
 ### TODO: Fill in IP addresses below ###
 # Old Publication Database (aka new subscription database, or old master) IP address
 OLD_PUB_IP=
 # Old Subscription Database (aka new publication database, or old slave) IP address
-NEw_PUB_IP=
+NEW_PUB_IP=
 
 # Step 0
 #  -- Stop all transaction processing against the publication database
@@ -28,8 +29,8 @@ done
 # Step 2 -- Create a backup of the replication triggers and their corresponding trigger functions; then disable/delete these triggers
 for i in rrpd rrpi rrpu
 do
-  psql -h ${OLD_PUB_IP} -Atc "SELECT pg_get_functiondef(oid) FROM pg_proc WHERE proname ILIKE '${i}%'" >> /tmp/1_edb_triggers.sql
-  pg_dump -h ${OLD_PUB_IP} -s | grep ${i} | grep "CREATE TRIGGER" >> /tmp/1_edb_triggers.sql
+  psql -h ${OLD_PUB_IP} -Atc "SELECT pg_get_functiondef(oid)||';' FROM pg_proc WHERE proname ILIKE '${i}%'" >> /tmp/1__edb_triggers.sql
+  pg_dump -h ${OLD_PUB_IP} -s | grep ${i} | grep "CREATE TRIGGER" >> /tmp/1__edb_triggers.sql
   pg_dump -h ${OLD_PUB_IP} -s | grep "ENABLE ALWAYS TRIGGER ${i}" | sed -s "s/ENABLE ALWAYS/DISABLE/" >> /tmp/1_disable_triggers.sql
 done
 psql -h ${OLD_PUB_IP} < /tmp/1_disable_triggers.sql
@@ -43,14 +44,14 @@ psql -h ${OLD_PUB_IP} < /tmp/2_edb_replicator_sub.sql
 
 # Step 5 -- Restore the backup of schema _edb_replicator_sub onto the new subscription DB (aka old publication DB)
 # Also restore the backup of the replication triggers and trigger functions
-cat /tmp/1_edb_* | psql -h ${NEW_PUB_IP} 
+cat /tmp/1__edb_* | psql -h ${NEW_PUB_IP} 
 
 # Step 6 -- Update the control schema objects so that the publication database definition references the new publication/subscription databases
 psql -h ${NEW_PUB_IP} -c "UPDATE _edb_replicator_pub.xdb_pub_database SET db_host = '${NEW_PUB_IP}'"
 psql -h ${NEW_PUB_IP} -c "UPDATE _edb_replicator_sub.xdb_sub_database SET db_host = '${OLD_PUB_IP}'"
 
 # Step 7 -- Edit the xDB Replication Configuration file to reflect new publication database IP address
-sed -s "s/${OLD_PUB}/${NEW_PUB}/" /etc/edb-repl.conf 
+sed -s "s/${OLD_PUB_IP}/${NEW_PUB_IP}/" /etc/edb-repl.conf 
 
 # Step 8 -- Start up publication and subscription servers
 service edb-xdbpubserver start
