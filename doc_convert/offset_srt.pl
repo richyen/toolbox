@@ -6,7 +6,7 @@ use strict;
 
 sub offset_file {
   my ($filename, $slide_target, $time_target, $begin_slidenum, $end_slidenum) = @_;
-  open(my $file, '<', $filename);
+  open(my $file, '<', $filename) or die "could not open $filename: $!";
   
   my $slide_offset = $begin_slidenum - $slide_target;
   my $time_offset;
@@ -52,8 +52,10 @@ sub offset_file {
 }
 
 sub apply_offset {
-  my ($new_slidenum, $oldstart, $oldend, $time_offset, $text) = @_;
-  open (my $outfile, '>>', "offset_$filename");
+  my ($filename, $new_slidenum, $oldstart, $oldend, $time_offset, $text) = @_;
+  my $newfilename = $filename;
+  $newfilename =~ s/(.*)\.srt/$1_offset.srt/;
+  open (my $outfile, '>>', $newfilename) or die "could not open $newfilename";
   print $outfile $new_slidenum . "\n";
   print $outfile new_timecode($oldstart, $time_offset) . " --> " . new_timecode($oldend, $time_offset) . "\n";
   print $outfile $text;
@@ -89,8 +91,7 @@ sub convert_to_timecode {
 
 sub main {
   my ($filename, $slide_target, $time_target, $begin_slidenum, $end_slidenum) = @ARGV;
-  print Dumper (\@ARGV);
-  offset_file($slide_target, $time_target, $begin_slidenum, $end_slidenum);
+  offset_file($filename, $slide_target, $time_target, $begin_slidenum, $end_slidenum);
 }
 
 main();
