@@ -11,7 +11,7 @@ fi
 
 MAJOR_VERSION=`psql -Atc "SELECT current_setting('server_version_num');" | cut -f2 -d'0'`
 
-if [[ $1 -lt 6 ]]
+if [[ $MAJOR_VERSION -lt 6 ]]
 then
   yum -y install java-1.7.0-openjdk-devel ppas9${MAJOR_VERSION}-pljava
   echo "pljava.libjvm_location = '/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.141.x86_64/jre/lib/amd64/server/libjvm.so'" >> /var/lib/ppas/9.${MAJOR_VERSION}/data/postgresql.conf 
