@@ -3,14 +3,13 @@
 # Simple script to set up and install pljava on an EDB Posgres Advanced Server instance.
 # Assumes you have access to EDB's Yum Repository
 
-if [[ "${1}x" == "x" ]]
+if [[ `psql -Atc "SELECT current_setting('server_version_num');" | cut -f1 -d'0'` -ne 9 ]]
 then
-  echo "Usage: $0 <major version>"
-  echo "Assumes you are using version 9.x"
+  echo "This script only compatible with PG 9.x"
   exit
 fi
 
-MAJOR_VERSION=${1}
+MAJOR_VERSION=`psql -Atc "SELECT current_setting('server_version_num');" | cut -f2 -d'0'`
 
 if [[ $1 -lt 6 ]]
 then
