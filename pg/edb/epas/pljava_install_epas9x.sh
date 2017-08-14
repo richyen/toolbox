@@ -22,6 +22,9 @@ then
 else
   yum --enablerepo=edbas96 -y install edb-as96-pljava
   echo "pljava.libjvm_location = '/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.141-2.b16.el6_9.x86_64/jre/lib/amd64/server/libjvm.so'" >> /var/lib/edb/as9.6/data/postgresql.conf
+  echo "pljava.classpath = '/usr/edb/as9.6/lib/pljava.jar'" >> /var/lib/edb/as9.6/data/postgresql.conf
+  ln -s /usr/edb/as9.6/share/pljava/pljava-1.5.0.jar /usr/edb/as9.6/lib/pljava.jar
+  ln -s /usr/edb/as9.6/lib/libpljava-so-1.5.0.so /usr/edb/as9.6/lib/pljava.so
   service edb-as-9.6 restart
   psql -c "CREATE EXTENSION pljava"
 fi
