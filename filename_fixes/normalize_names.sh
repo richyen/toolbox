@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dir=${1}
+dir=${1%/}
 for_real=${2}
 prefix=`echo ${dir} | rev | cut -d/ -f1 | rev`
 index=0
