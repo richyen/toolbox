@@ -37,7 +37,6 @@ echo "local  all         all                 trust" >  ${PGDATA}/pg_hba.conf
 echo "local  replication all                 trust" >> ${PGDATA}/pg_hba.conf
 echo "host   replication enterprisedb  0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
-cat postgresql.conf.new > /var/lib/ppas/9.5/data/postgresql.conf 
 service ppas-9.5 start
 
 # For XDB, if needed
@@ -46,7 +45,7 @@ chmod 755 xdbreplicationserver-6.1.2-1-linux-x64.run
 ./xdbreplicationserver-6.1.2-1-linux-x64.run --existing-user ${EDBUSERNAME} --existing-password ${EDBPASSWORD} --mode unattended --admin_user enterprisedb --admin_password abc123 --prefix ${INSTALLDIR}
 echo "user=enterprisedb" > /usr/ppas-xdb-6.0/etc/xdb_repsvrfile.conf
 echo "password=Cz0Ccyegvs8=" >> /usr/ppas-xdb-6.0/etc/xdb_repsvrfile.conf
-ehco "port=9051" >> /usr/ppas-xdb-6.0/etc/xdb_repsvrfile.conf
+echo "port=9051" >> /usr/ppas-xdb-6.0/etc/xdb_repsvrfile.conf
 echo "host=127.0.0.1" >> /usr/ppas-xdb-6.0/etc/xdb_repsvrfile.conf
 
 # Additional config required to make this work--sets up replication
