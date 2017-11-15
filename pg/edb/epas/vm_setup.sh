@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# For EDBAS
+# Environment
 REPONAME=ppas95
 PGMAJOR=9.5
 PGPORT=5432
@@ -11,6 +11,13 @@ PGDATA=/var/lib/ppas/${PGMAJOR}/data
 PGLOG=/var/lib/ppas/${PGMAJOR}/pgstartup.log
 YUMUSERNAME=edb-richardyen                               
 YUMPASSWORD=####
+XDB_VERSION=6.0
+INSTALLDIR=/usr/ppas-xdb-${XDB_VERSION}
+JAVA_VERSION=1.7
+EDBUSERNAME="richard.yen@enterprisedb.com"
+EDBPASSWORD=####
+
+# For EDBAS
 rpm -ivh http://yum.enterprisedb.com/reporpms/${REPONAME}-repo-${PGMAJOR}-1.noarch.rpm
 sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/${REPONAME}.repo
 yum -y update
@@ -35,11 +42,6 @@ service ppas-9.5 start
 
 # For XDB, if needed
 wget http://get.enterprisedb.com/xdb/xdbreplicationserver-6.1.2-1-linux-x64.run
-XDB_VERSION=6.0
-INSTALLDIR=/usr/ppas-xdb-${XDB_VERSION}
-JAVA_VERSION=1.7
-EDBUSERNAME="richard.yen@enterprisedb.com"
-EDBPASSWORD=####
 chmod 755 xdbreplicationserver-6.1.2-1-linux-x64.run 
 ./xdbreplicationserver-6.1.2-1-linux-x64.run --existing-user ${EDBUSERNAME} --existing-password ${EDBPASSWORD} --mode unattended --admin_user enterprisedb --admin_password abc123 --prefix ${INSTALLDIR}
 echo "user=enterprisedb" > /usr/ppas-xdb-6.0/etc/xdb_repsvrfile.conf
