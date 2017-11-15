@@ -42,6 +42,9 @@ echo "local  replication all                 trust" >> ${PGDATA}/pg_hba.conf
 echo "host   replication enterprisedb  0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 
+### For streaming replication, if desired
+# sudo -u enterprisedb /usr/ppas-9.5/bin/pg_basebackup -xRP -h 10.228.145.74 -p5432 -D /var/lib/ppas/9.5/data
+
 ### TODO: Put your desired postgresql.conf in here if you want something customized
 # cat /home/ec2-user/postgresql.conf > ${PGDATA}/postgresql.conf
 service ppas-9.5 start
