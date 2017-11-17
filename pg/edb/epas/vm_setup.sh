@@ -53,7 +53,7 @@ service ppas-9.5 start
 ### For XDB, if needed
 # wget http://get.enterprisedb.com/xdb/xdbreplicationserver-6.1.2-1-linux-x64.run
 # chmod 755 xdbreplicationserver-6.1.2-1-linux-x64.run 
-# ${H}/xdbreplicationserver-6.1.2-1-linux-x64.run --existing-user ${EDBUSERNAME} --existing-password ${EDBPASSWORD} --mode unattended --admin_user enterprisedb --admin_password abc123 --prefix ${INSTALLDIR}
+# ${H}/xdbreplicationserver-6.1.2-1-linux-x64.run --existing-user ${EDBUSERNAME} --existing-password ${EDBPASSWORD} --mode unattended --admin_user enterprisedb --admin_password abc123 --prefix ${XDB_INSTALLDIR}
 # echo "user=enterprisedb" > ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
 # echo "password=Cz0Ccyegvs8=" >> ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
 # echo "port=9051" >> ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
