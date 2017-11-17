@@ -3,6 +3,7 @@
 ### Simple script to provision a VM (currently for RHEL 7 on AWS, but can be easily changed to handle other types)
 
 ### Environment
+H=/home/ec2-user
 REPONAME=ppas95
 PGMAJOR=9.5
 PGPORT=5432
@@ -30,7 +31,7 @@ echo 'root:root'|chpasswd
 adduser --home-dir /home/postgres --create-home postgres
 echo 'postgres   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 echo 'postgres:postgres'|chpasswd
-rm -rf ${PGDATA{
+rm -rf ${PGDATA}
 sudo -u enterprisedb /usr/ppas-9.5/bin/initdb -D ${PGDATA}  
 sed -i "s/^PGPORT.*/PGPORT=${PGPORT}/" /etc/sysconfig/ppas/ppas-${PGMAJOR}
 echo "export PGPORT=${PGPORT}"         >> /etc/profile.d/pg_env.sh
@@ -46,20 +47,20 @@ echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 # sudo -u enterprisedb /usr/ppas-9.5/bin/pg_basebackup -xRP -h 10.228.145.74 -p5432 -D ${PGDATA}
 
 ### TODO: Put your desired postgresql.conf in here if you want something customized
-# cat ${HOME}/postgresql.conf > ${PGDATA}/postgresql.conf
+# cat ${H}/postgresql.conf > ${PGDATA}/postgresql.conf
 service ppas-9.5 start
 
 ### For XDB, if needed
 # wget http://get.enterprisedb.com/xdb/xdbreplicationserver-6.1.2-1-linux-x64.run
 # chmod 755 xdbreplicationserver-6.1.2-1-linux-x64.run 
-# ${HOME}/xdbreplicationserver-6.1.2-1-linux-x64.run --existing-user ${EDBUSERNAME} --existing-password ${EDBPASSWORD} --mode unattended --admin_user enterprisedb --admin_password abc123 --prefix ${INSTALLDIR}
+# ${H}/xdbreplicationserver-6.1.2-1-linux-x64.run --existing-user ${EDBUSERNAME} --existing-password ${EDBPASSWORD} --mode unattended --admin_user enterprisedb --admin_password abc123 --prefix ${INSTALLDIR}
 # echo "user=enterprisedb" > ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
 # echo "password=Cz0Ccyegvs8=" >> ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
 # echo "port=9051" >> ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
 # echo "host=127.0.0.1" >> ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
-# cat ${HOME}/xdb_pubserver.conf > ${XDB_INSTALLDIR}/etc/xdb_pubserver.conf
+# cat ${H}/xdb_pubserver.conf > ${XDB_INSTALLDIR}/etc/xdb_pubserver.conf
 
 ### TODO: Additional config required to make this work--sets up replication
-# ${HOME}/build_xdb_mmr_publication.sh 
+# ${H}/build_xdb_mmr_publication.sh 
 # psql -p 5432 edb enterprisedb < insert.sql 
-# /usr/ppas-9.5/bin/pgbench -P 30 -T 1800 -R 600 -f ${HOME}/bench.sql -p5432 -U enterprisedb edb 
+# /usr/ppas-9.5/bin/pgbench -P 30 -T 1800 -R 600 -f ${H}/bench.sql -p5432 -U enterprisedb edb 
