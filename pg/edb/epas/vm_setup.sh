@@ -59,6 +59,7 @@ service ppas-9.5 start
 # echo "port=9051" >> ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
 # echo "host=127.0.0.1" >> ${XDB_INSTALLDIR}/etc/xdb_repsvrfile.conf
 # cat ${H}/xdb_pubserver.conf > ${XDB_INSTALLDIR}/etc/xdb_pubserver.conf
+# cat ${H}/xdbReplicationServer-61.config > ${XDB_INSTALLDIR}/etc/sysconfig/xdbReplicationServer-61.config
 
 ### TODO: Additional config required to make this work--sets up replication
 # ${H}/build_xdb_mmr_publication.sh 
