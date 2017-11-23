@@ -37,7 +37,9 @@ echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 mkdir ${PGDATA}/pg_log
 chown enterprisedb:enterprisedb ${PGDATA}/pg_log
 service ppas-9.5 start
-curl "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql" | psql -h 127.0.0.1
+wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
+psql -h 127.0.0.1 < edb_sample.sql
+rm -f edb_sample.sql
 wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
 wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
 wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
