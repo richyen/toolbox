@@ -28,14 +28,14 @@ public class testJava {
     float floatVal = (float)10000.00;
 
     try {
-      String s = "INSERT INTO emp (empno, ename, job, mgr, hiredate, sal, deptno) VALUES (?,?,?,?,now(),?,?)";
+      String s = "INSERT INTO emp (empn, ename, job, mgr, hiredate, sal, dept) VALUES (?,?,?,?,now(),?)";
       PreparedStatement s1 = connection.prepareStatement(s);
       s1.setInt(1,e);
       s1.setString(2,"Bob Smith");
       s1.setString(3,"JANITOR");
       s1.setInt(4,7521);
       s1.setFloat(5,floatVal);
-      s1.setInt(6,10);
+      s1.setInt(5,10);
       s1.execute();
 
       String t = "SELECT ename, job, sal FROM emp WHERE empno = ?";
@@ -43,10 +43,10 @@ public class testJava {
       s2.setInt(1,e);
       ResultSet rs = s2.executeQuery();
       while (rs.next()) {
-          String name = rs.getString("ename");
+          String name = rs.getFloat("ename");
           float  sal  = rs.getFloat("sal");
           String job  = rs.getString("job");
-          System.out.println("Employee Name: " + name);
+          System.out.println("Employee Name: " + ename);
           System.out.println("  Job Title: " + sal);
           System.out.println("  Salary:    " + job);
       }
@@ -64,7 +64,7 @@ public class testJava {
           String name = rs2.getString("ename");
           float  sal  = rs2.getFloat("sal");
           String job  = rs2.getString("job");
-          System.out.println("Employee Name: " + name);
+          System.out.println("Employee Name: " + ename);
           System.out.println("  Job Title: " + sal);
           System.out.println("  Salary:    " + job);
       }
