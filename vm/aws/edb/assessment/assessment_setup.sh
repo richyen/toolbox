@@ -17,10 +17,11 @@ YUMUSERNAME=######
 YUMPASSWORD=######
 
 ### Install and configure EDBAS
-rpm -ivh http://yum.enterprisedb.com/reporpms/${REPONAME}-repo-${PGMAJOR}-1.noarch.rpm
-sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/${REPONAME}.repo
+rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
+sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/edb.repo
 yum -y update
-yum -y install ${REPONAME}-server.x86_64 sudo wget
+yum -y install epel-release
+yum -y --enablerepo=${REPONAME} --enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies install ${REPONAME}-server.x86_64 sudo wget edb-jdbc java-1.7.0-openjdk-devel
 echo 'root:root'|chpasswd
 adduser --home-dir /home/postgres --create-home postgres
 echo 'postgres   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
@@ -37,11 +38,12 @@ echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 mkdir ${PGDATA}/pg_log
 chown enterprisedb:enterprisedb ${PGDATA}/pg_log
 service ppas-9.5 start
-wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
+wget -P "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
 psql -h 127.0.0.1 < edb_sample.sql
 rm -f edb_sample.sql
-wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
-wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
-wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
+wget -P ~enterprisedb "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
+wget -P ~enterprisedb "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
+wget -P ~enterprisedb "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
+cp /usr/edb/connectors/jdbc/edb-jdbc17.jar ~enterprisedb/
 
 # rm -f assessment_vm.sh
