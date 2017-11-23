@@ -24,76 +24,56 @@ public class testJava {
     String password = "password";
     connection = DriverManager.getConnection(url,user,password);
     connection.setAutoCommit(false);
-    int e = 5057;
     float floatVal = (float)10000.00;
+    int new_empno = 5057;
+    int bad_empno = 7934;
 
-    try {
-      String s = "INSERT INTO emp (empn, ename, job, mgr, hiredate, sal, dept) VALUES (?,?,?,?,now(),?)";
-      PreparedStatement s1 = connection.prepareStatement(s);
-      s1.setInt(1,e);
-      s1.setString(2,"Bob Smith");
-      s1.setString(3,"JANITOR");
-      s1.setInt(4,7521);
-      s1.setFloat(5,floatVal);
-      s1.setInt(5,10);
-      s1.execute();
+    CallableStatement cs1 = connection.prepareCall("{? = call new_empno()}");
+    cs1.registerOutParameter(1, Types.NUMERIC);
+    cs1.execute();
+    new_empno = cs1.getBigDecimal(1).intValueExact();
 
-      String t = "SELECT ename, job, sal FROM emp WHERE empno = ?";
-      PreparedStatement s2 = connection.prepareStatement(t);
-      s2.setInt(1,e);
-      ResultSet rs = s2.executeQuery();
-      while (rs.next()) {
-          String name = rs.getFloat("ename");
-          float  sal  = rs.getFloat("sal");
-          String job  = rs.getString("job");
-          System.out.println("Employee Name: " + ename);
-          System.out.println("  Job Title: " + sal);
-          System.out.println("  Salary:    " + job);
-      }
+    String s1 = "INSERT INTO emp (empn, ename, job, mgr, hiredate, sal, deptno) VALUES (?,?,?,?,now(),?,?)";
+    PreparedStatement ps1 = connection.prepareStatement(s);
+    ps1.setInt(1,new_empno);
+    ps1.setString(2,"Bob Smith");
+    ps1.setString(3,"JANITOR");
+    ps1.setInt(4,7521);
+    ps1.setFloat(5,floatVal);
+    ps1.setInt(6,10);
+    ps1.execute();
 
-      String commandText = "UPDATE emp SET sal = sal * 1.1";
-      PreparedStatement cs = connection.prepareStatement(commandText);
-      cs.executeUpdate();
-      connection.commit();
+    String commandText = "UPDATE emp SET sal = sal * 1.1";
+    PreparedStatement ps2 = connection.prepareStatement(commandText);
+    ps2.executeUpdate();
 
-      String t2 = "SELECT ename, job, sal FROM emp WHERE empno = ?";
-      PreparedStatement s3 = connection.prepareStatement(t2);
-      s3.setInt(1,e);
-      ResultSet rs2 = s3.executeQuery();
-      while (rs2.next()) {
-          String name = rs2.getString("ename");
-          float  sal  = rs2.getFloat("sal");
-          String job  = rs2.getString("job");
-          System.out.println("Employee Name: " + ename);
-          System.out.println("  Job Title: " + sal);
-          System.out.println("  Salary:    " + job);
-      }
+    CallableStatement cs2 = connection.prepareCall("{call emp_admin.fire_emp(?)}");
+    cs2.setInt(1,bad_empno);
+    cs2.execute();
+    connection.commit()
 
-      String commandText2 = "DELETE FROM emp WHERE empno = ?";
-      PreparedStatement cs2 = connection.prepareStatement(commandText2);
-      cs2.setInt(1,e);
-      cs2.executeUpdate();
-      connection.commit();
-    } catch (SQLException ex)
-    {
-      System.out.println("State: " + ex.getSQLState() +
-                         "\nMessage: " + ex.getMessage());
-
+    String s2 = "SELECT empno, ename, job, sal FROM emp";
+    PreparedStatement ps3 = connection.prepareStatement(s2);
+    ResultSet rs = cs2.executeQuery();
+    while (rs.next()) {
+        String name  = rs.getString("ename");
+        float  sal   = rs.getFloat("sal");
+        String job   = rs.getString("job");
+        int    empno = rs.getInt("empID");
+        System.out.printline("Employee Name: " + name);
+        System.out.printline("  Number:    " + empno);
+        System.out.printline("  Job Title: " + sal);
+        System.out.printline("  Salary:    " + job);
     }
 
-    finally {
-      try {
-
-        if (connection != null)
-
-        {
-          connection.close();
-        }
-
-      } catch (SQLException ex)
+    try {
+      if (connection != null)
       {
-        System.out.println(ex);
+        connection.close();
       }
+    } catch (SQLException ex)
+    {
+      System.out.println(ex);
     }
   }
 }
