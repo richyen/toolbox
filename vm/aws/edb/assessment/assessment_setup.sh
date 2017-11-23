@@ -3,14 +3,14 @@
 ### Provision a VM for assessment
 
 ### Environment
-REPONAME=ppas95
-PGMAJOR=9.5
-PGPORT=5432
-PGDATABASE=edb
-PGUSER=enterprisedb
-PATH=/usr/ppas-${PGMAJOR}/bin:${PATH}
-PGDATA=/var/lib/ppas/${PGMAJOR}/data
-PGLOG=/var/lib/ppas/${PGMAJOR}/pgstartup.log
+export REPONAME=ppas95
+export PGMAJOR=9.5
+export PGPORT=5432
+export PGDATABASE=edb
+export PGUSER=enterprisedb
+export PATH=/usr/ppas-${PGMAJOR}/bin:${PATH}
+export PGDATA=/var/lib/ppas/${PGMAJOR}/data
+export PGLOG=/var/lib/ppas/${PGMAJOR}/pgstartup.log
 
 ### TODO: Set these accordingly
 YUMUSERNAME=######
