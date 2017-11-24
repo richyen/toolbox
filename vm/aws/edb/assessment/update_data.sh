@@ -15,6 +15,10 @@ done
 
 # Populate the sales table
 psql -c "UPDATE sales SET salesperson = e.empno FROM (select distinct (empno % 13) + 1 as idx, * from emp) e WHERE (sales.id % 13) = e.idx"
+psql -c "UPDATE sales SET sale_amount = random() * 100"
+psql -c "UPDATE sales SET sale_date = select now() - random() * interval '1 month'"
+
+# Set the customer name for each row based on the empno/salesperson
 MAXID=`psql -Atc "SELECT max(id) FROM sales"`
 for id in `seq 1 ${MAXID}`
   do
