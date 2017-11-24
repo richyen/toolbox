@@ -4,5 +4,4 @@ SELECT ename, sale_date, customer_name, sale_amount
   JOIN jobhist j ON j.empno=e.empno
  WHERE date_part('month',sale_date) = 11
    AND j.startdate between '1980-01-01' and '1985-01-01'
- ORDER BY sale_amount
-  DESC limit 10;
+ ORDER BY sale_amount DESC;
