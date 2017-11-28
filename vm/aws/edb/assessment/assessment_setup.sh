@@ -38,6 +38,12 @@ echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 mkdir ${PGDATA}/pg_log
 chown enterprisedb:enterprisedb ${PGDATA}/pg_log
 service ppas-9.5 start
+
+# Monitor command history
+echo "export HISTTIMEFORMAT=\"%Y-%m-%d %T \"" >> /etc/bashrc
+echo "PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t \"\$USER[\$\$] \$SSH_CONNECTION\")'" >> /etc/bashrc
+
+# Set up assessment files
 wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
 psql -h 127.0.0.1 < edb_sample.sql
 rm -f edb_sample.sql
