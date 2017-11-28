@@ -45,5 +45,6 @@ wget -P ~enterprisedb "https://raw.githubusercontent.com/richyen/toolbox/master/
 wget -P ~enterprisedb "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
 wget -P ~enterprisedb "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
 cp /usr/edb/connectors/jdbc/edb-jdbc17.jar ~enterprisedb/
+chown -R enterprisedb:enterprisedb ~enterprisedb
 
 rm -f assessment_vm.sh
