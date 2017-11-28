@@ -14,7 +14,7 @@ for empno in `psql -Atc "SELECT empno FROM emp"`
 done
 
 # Populate the sales table
-psql -c "INSERT INTO sales VALUES (generate_series(1001,2000),(SELECT max(empno) FROM emp),md5(random()), now() - random() * interval '1 year', (random()*100)::int);"
+psql -c "INSERT INTO sales VALUES (generate_series(1001,20000),(SELECT max(empno) FROM emp),md5(random()), now() - random() * interval '1 year', (random()*100)::int);"
 psql -c "UPDATE sales SET salesperson = e.empno, sale_amount = random() * 100 FROM (select distinct (empno % 13) + 1 as idx, * from emp) e WHERE (sales.id % 13) = e.idx"
 
 # Set the customer name for each row based on the empno/salesperson
