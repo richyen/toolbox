@@ -16,16 +16,23 @@ export PGLOG=/var/lib/ppas/${PGMAJOR}/pgstartup.log
 YUMUSERNAME=######
 YUMPASSWORD=######
 
-### Install and configure EDBAS
+### Install EDBAS
 rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
 sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/edb.repo
 yum -y update
 yum -y install epel-release
 yum -y --enablerepo=${REPONAME} --enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies install ${REPONAME}-server.x86_64 sudo wget edb-jdbc java-1.7.0-openjdk-devel
-echo 'root:root'|chpasswd
+
+### Set user info
 adduser --home-dir /home/postgres --create-home postgres
 echo 'postgres   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
-echo 'postgres:postgres'|chpasswd
+echo 'enterprisedb   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
+mkdir ~enterprisedb/.ssh
+touch ~enterprisedb/.ssh/authorized_keys
+chmod 700 ~enterprisedb/.ssh
+chmod 600 ~enterprisedb/.ssh/authorized_keys
+
+### Initialize new database
 rm -rf ${PGDATA}
 sudo -u enterprisedb /usr/ppas-${PGMAJOR}/bin/initdb -D ${PGDATA}
 sed -i "s/^PGPORT.*/PGPORT=${PGPORT}/" /etc/sysconfig/ppas/ppas-${PGMAJOR}
