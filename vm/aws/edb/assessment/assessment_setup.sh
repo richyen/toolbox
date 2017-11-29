@@ -44,16 +44,15 @@ chown ${PGUSER}:${PGUSER} ${PGDATA}/pg_log
 adduser --home-dir /home/postgres --create-home postgres
 echo 'postgres    ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 echo "${PGUSER}   ALL=(ALL)   NOPASSWD: ALL" >> /etc/sudoers
-mkdir ~${PGUSER}/.ssh
-touch ~${PGUSER}/.ssh/authorized_keys
-chmod 700 ~${PGUSER}/.ssh
-chmod 600 ~${PGUSER}/.ssh/authorized_keys
 
 ### Start EDBAS
 systemctl start ppas-${PGMAJOR}
 
-# Set up assessment files
-wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
+### Prepare for assessment
+mkdir ~${PGUSER}/.ssh
+touch ~${PGUSER}/.ssh/authorized_keys
+chmod 700 ~${PGUSER}/.ssh
+chmod 600 ~${PGUSER}/.ssh/authorized_keyswget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
 psql -h 127.0.0.1 < edb_sample.sql
 rm -f edb_sample.sql
 wget -P ~${PGUSER} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
