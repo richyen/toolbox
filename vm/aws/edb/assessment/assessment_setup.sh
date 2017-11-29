@@ -8,6 +8,7 @@ PGMAJOR=9.5
 PGPORT=5432
 PGDATABASE=edb
 PGUSER=enterprisedb
+EDBHOME="/var/lib/ppas"
 PATH=/usr/ppas-${PGMAJOR}/bin:${PATH}
 PGDATA=/var/lib/ppas/${PGMAJOR}/data
 PGLOG=/var/lib/ppas/${PGMAJOR}/pgstartup.log
@@ -16,7 +17,7 @@ PGLOG=/var/lib/ppas/${PGMAJOR}/pgstartup.log
 YUMUSERNAME=######
 YUMPASSWORD=######
 
-# Monitor command history
+### Monitor command history
 echo "export HISTTIMEFORMAT=\"%Y-%m-%d %T \"" >> /etc/bashrc
 echo "PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t \"\$USER[\$\$] \$SSH_CONNECTION\")'" >> /etc/bashrc
 
@@ -24,7 +25,7 @@ echo "PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t \"\$USER[\
 rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
 sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/edb.repo
 yum -y update
-yum -y install epel-release
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum -y --enablerepo=${REPONAME} --enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies install ${REPONAME}-server.x86_64 sudo wget edb-jdbc java-1.7.0-openjdk-devel
 
 ### Initialize new database
@@ -49,16 +50,17 @@ echo "${PGUSER}   ALL=(ALL)   NOPASSWD: ALL" >> /etc/sudoers
 systemctl start ppas-${PGMAJOR}
 
 ### Prepare for assessment
-mkdir ~${PGUSER}/.ssh
-touch ~${PGUSER}/.ssh/authorized_keys
-chmod 700 ~${PGUSER}/.ssh
-chmod 600 ~${PGUSER}/.ssh/authorized_keyswget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
+mkdir ${EDBHOME}/.ssh
+touch ${EDBHOME}/.ssh/authorized_keys
+chmod 700 ${EDBHOME}/.ssh
+chmod 600 ${EDBHOME}/.ssh/authorized_keys
+wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
 psql -h 127.0.0.1 < edb_sample.sql
 rm -f edb_sample.sql
-wget -P ~${PGUSER} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
-wget -P ~${PGUSER} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
-wget -P ~${PGUSER} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
-cp /usr/edb/connectors/jdbc/edb-jdbc17.jar ~${PGUSER}/
-chown -R ${PGUSER}:${PGUSER} ~${PGUSER}
+wget -P ${EDBHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
+wget -P ${EDBHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
+wget -P ${EDBHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
+cp /usr/edb/connectors/jdbc/edb-jdbc17.jar ${EDBHOME}
+chown -R ${PGUSER}:${PGUSER} ${EDBHOME}
 
 rm -f assessment_vm.sh
