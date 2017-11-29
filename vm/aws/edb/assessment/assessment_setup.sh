@@ -27,15 +27,6 @@ yum -y update
 yum -y install epel-release
 yum -y --enablerepo=${REPONAME} --enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies install ${REPONAME}-server.x86_64 sudo wget edb-jdbc java-1.7.0-openjdk-devel
 
-### Set user info
-adduser --home-dir /home/postgres --create-home postgres
-echo 'postgres    ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
-echo "${PGUSER}   ALL=(ALL)   NOPASSWD: ALL" >> /etc/sudoers
-mkdir ~${PGUSER}/.ssh
-touch ~${PGUSER}/.ssh/authorized_keys
-chmod 700 ~${PGUSER}/.ssh
-chmod 600 ~${PGUSER}/.ssh/authorized_keys
-
 ### Initialize new database
 rm -rf ${PGDATA}
 sudo -u ${PGUSER} /usr/ppas-${PGMAJOR}/bin/initdb -D ${PGDATA}
@@ -48,6 +39,17 @@ echo "local  all         all                 peer"  >  ${PGDATA}/pg_hba.conf
 echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 mkdir ${PGDATA}/pg_log
 chown ${PGUSER}:${PGUSER} ${PGDATA}/pg_log
+
+### Set user info
+adduser --home-dir /home/postgres --create-home postgres
+echo 'postgres    ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
+echo "${PGUSER}   ALL=(ALL)   NOPASSWD: ALL" >> /etc/sudoers
+mkdir ~${PGUSER}/.ssh
+touch ~${PGUSER}/.ssh/authorized_keys
+chmod 700 ~${PGUSER}/.ssh
+chmod 600 ~${PGUSER}/.ssh/authorized_keys
+
+### Start EDBAS
 systemctl start ppas-${PGMAJOR}
 
 # Set up assessment files
