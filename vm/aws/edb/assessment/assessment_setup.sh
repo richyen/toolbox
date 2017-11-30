@@ -8,7 +8,7 @@ PGMAJOR=9.5
 PGPORT=5432
 PGDATABASE=edb
 PGUSER=enterprisedb
-EDBHOME="/var/lib/ppas"
+PGHOME=/home/postgres
 PATH=/usr/ppas-${PGMAJOR}/bin:${PATH}
 PGDATA=/var/lib/ppas/${PGMAJOR}/data
 PGLOG=/var/lib/ppas/${PGMAJOR}/pgstartup.log
@@ -42,25 +42,24 @@ mkdir ${PGDATA}/pg_log
 chown ${PGUSER}:${PGUSER} ${PGDATA}/pg_log
 
 ### Set user info
-adduser --home-dir /home/postgres --create-home postgres
+adduser --home-dir ${PGHOME} --create-home postgres
 echo 'postgres    ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
-echo "${PGUSER}   ALL=(ALL)   NOPASSWD: ALL" >> /etc/sudoers
 
 ### Start EDBAS
 systemctl start ppas-${PGMAJOR}
 
 ### Prepare for assessment
-mkdir ${EDBHOME}/.ssh
-touch ${EDBHOME}/.ssh/authorized_keys
-chmod 700 ${EDBHOME}/.ssh
-chmod 600 ${EDBHOME}/.ssh/authorized_keys
+mkdir ${PGHOME}/.ssh
+touch ${PGHOME}/.ssh/authorized_keys
+chmod 700 ${PGHOME}/.ssh
+chmod 600 ${PGHOME}/.ssh/authorized_keys
 wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
 psql -h 127.0.0.1 < edb_sample.sql
 rm -f edb_sample.sql
-wget -P ${EDBHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
-wget -P ${EDBHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
-wget -P ${EDBHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
-cp /usr/edb/connectors/jdbc/edb-jdbc17.jar ${EDBHOME}
-chown -R ${PGUSER}:${PGUSER} ${EDBHOME}
+wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
+wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
+wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
+cp /usr/edb/connectors/jdbc/edb-jdbc17.jar ${PGHOME}
+chown -R postgres:postgres ${PGHOME}
 
 rm -f assessment_vm.sh
