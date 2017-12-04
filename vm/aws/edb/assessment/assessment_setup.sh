@@ -54,7 +54,7 @@ touch ${PGHOME}/.ssh/authorized_keys
 chmod 700 ${PGHOME}/.ssh
 chmod 600 ${PGHOME}/.ssh/authorized_keys
 wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
-psql -h 127.0.0.1 < edb_sample.sql
+psql -h 127.0.0.1 -p ${PGPORT} ${PGDATABASE} ${PGUSER} < edb_sample.sql
 rm -f edb_sample.sql
 wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
 wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
