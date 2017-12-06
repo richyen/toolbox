@@ -471,7 +471,7 @@ IS
     BEGIN
         SELECT sal INTO v_sal FROM emp WHERE empno = p_empno;
         v_sal := v_sal + p_raise;
-        UPDATE emp SET sal = v_sal WHERE empno = p_empno;
+        UPDATE emp SET sal = v_sal;
         RETURN v_sal;
     EXCEPTION
         WHEN NO_DATA_FOUND THEN
