@@ -16,6 +16,7 @@ PGLOG=/var/lib/ppas/${PGMAJOR}/pgstartup.log
 ### TODO: Set these accordingly
 YUMUSERNAME=######
 YUMPASSWORD=######
+SSH_PUB_KEY="######"
 
 ### Monitor command history
 echo "export HISTTIMEFORMAT=\"%Y-%m-%d %T \"" >> /etc/bashrc
@@ -50,7 +51,7 @@ systemctl start ppas-${PGMAJOR}
 
 ### Prepare for assessment
 mkdir ${PGHOME}/.ssh
-touch ${PGHOME}/.ssh/authorized_keys
+echo ${SSH_PUB_KEY} >> ${PGHOME}/.ssh/authorized_keys
 chmod 700 ${PGHOME}/.ssh
 chmod 600 ${PGHOME}/.ssh/authorized_keys
 wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
