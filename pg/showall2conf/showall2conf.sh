@@ -11,7 +11,7 @@ DL='|'
 SORTED=`cat ${FILE} | grep "${DL}" | cut -f 1-2 -d "${DL}" | awk '{ printf("%s = %s\n", $1, $3) }' | grep -v "name = setting"`; # > /tmp/sa2c.1.txt
 
 # Ignore these params, as they don't belong in postgresql.conf, but show up in SHOW ALL anyways
-IGNORE_SETTINGS="block_size config_file custom_variable_classes default_transaction_isolation integer_datetimes lc_collate lc_ctype max_function_args max_identifier_length max_index_keys segment_size server_encoding server_version server_version_num transaction_isolation wal_block_size wal_segment_size"
+IGNORE_SETTINGS="block_size config_file custom_variable_classes default_transaction_isolation integer_datetimes lc_collate lc_ctype max_function_args max_identifier_length max_index_keys segment_size server_encoding server_version server_version_num transaction_isolation wal_block_size wal_segment_size data_checksums debug_assertions application_name"
 
 for ignore in ${IGNORE_SETTINGS}; do SORTED=`echo "${SORTED}" | grep -v "^${ignore}\b"`; done
 
