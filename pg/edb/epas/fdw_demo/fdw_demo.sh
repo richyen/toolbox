@@ -31,11 +31,10 @@ docker exec -t pgsql bash --login -c "cp /fdw_demo/instantclient_11_2/lib* /u01/
 docker exec -t pgsql mkdir -p mkdir -p /u01/app/oracle/product/11.2.0/xe/rdbms/public
 docker exec -t pgsql bash --login -c "cp /fdw_demo/instantclient_11_2/sdk/include/*.h /u01/app/oracle/product/11.2.0/xe/rdbms/public"
 docker exec -t pgsql bash --login -c "echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /etc/bashrc"
-docker exec -t pgsql bash --login -c "echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /etc/bashrc"
 docker exec -t pgsql bash --login -c "echo 'export PATH=\$ORACLE_HOME/bin:\$PATH' >> /etc/bashrc"
 docker exec -t pgsql bash --login -c "echo 'export ORACLE_SID=XE' >> /etc/bashrc"
 
-#XXX Yes, this is very ugly...
+# XXX Yes, this is very ugly...
 docker exec -t pgsql ln -s /u01/app/oracle/product/11.2.0/xe/lib/libclntsh.so.11.1 /u01/app/oracle/product/11.2.0/xe/lib/libclntsh.so
 docker exec -t pgsql ln -s /u01/app/oracle/product/11.2.0/xe/lib/libclntsh.so.11.1 /lib64
 docker exec -t pgsql ln -s /u01/app/oracle/product/11.2.0/xe/lib/libclntsh.so /lib64
@@ -45,6 +44,8 @@ docker exec -t pgsql ln -s /u01/app/oracle/product/11.2.0/xe/lib/libnnz11.so /li
 ORA_IP=`docker exec -it oracle ifconfig | grep Bcast | awk '{ print $2 }' | cut -f2 -d':' | xargs echo -n`
 sed -i "s/whatismyip/$ORA_IP/" fdw_tests.sql
 docker exec -t pgsql git clone https://github.com/laurenz/oracle_fdw.git
+
+# TODO: These commands below don't really work--should be done manually from a Bash prompt
 docker exec -t pgsql make -C /oracle_fdw
 docker exec -t pgsql make -C /oracle_fdw install
 docker exec -t pgsql bash --login -c "psql < /fdw_demo/fdw_tests.sql"
