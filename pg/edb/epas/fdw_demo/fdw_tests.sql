@@ -177,9 +177,6 @@ col_157 varchar2(15),
 col_158 varchar2(15),
 col_159 varchar2(15),
 col_160 varchar2(15),
-col_161 varchar2(15),
-col_162 varchar2(15),
-col_163 varchar2(15)
 ) server oradb options (schema 'SYSTEM', table 'PS_JOB');
 
 create foreign table ps_job_small
