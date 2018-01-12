@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     ub1			 hour,	min, sec;
     ub4			 fsec;
 
-	/* 
+	/*
 	 * connect to the database... this call also allocates and
 	 * initializes an OCIEnv handle (env), an OCIError handle (err),
 	 * and an OCISvcCtx handle (svc)

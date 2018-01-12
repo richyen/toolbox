@@ -89,7 +89,7 @@ static void logon(int argc, char *argv[])
 
 		exit(1);
 	}
-	
+
     OCIEnvInit(&env, OCI_DEFAULT, 0, NULL);
     OCIHandleAlloc(env, (void **)&err, OCI_HTYPE_ERROR, 0, NULL);
 

@@ -80,7 +80,7 @@ void initHandles(OCISvcCtx ** svchp, OCIServer ** srvhp, OCISession ** authp, OC
 	//	OCI_THREADED | OCI_OBJECT,
 	//	NULL, NULL, NULL, NULL, 0, (void**)NULL,
 	//	(ub2)OCI_UTF16ID,		//Metadata and SQL CHAR character set
-	//	(ub2)OCI_UTF16ID));		//SQL NCHAR character set 
+	//	(ub2)OCI_UTF16ID));		//SQL NCHAR character set
 
 printf("A1\n");
 /*
