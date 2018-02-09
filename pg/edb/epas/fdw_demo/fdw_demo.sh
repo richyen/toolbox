@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Clean up
-docker rm -f oracle
+docker rm -f oracle pgsql
 
 # Create Oracle container
 docker run --privileged=true --publish-all=true --interactive=false --tty=true -v ${PWD}:/fdw_demo --hostname=oracle --detach=true --name=oracle wnameless/oracle-xe-11g:latest
