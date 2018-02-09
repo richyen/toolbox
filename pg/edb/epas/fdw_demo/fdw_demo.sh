@@ -29,14 +29,13 @@ docker exec -t pgsql mkdir -p /u01/app/oracle/product/11.2.0/xe/lib
 docker exec -t pgsql bash --login -c "cp /fdw_demo/instantclient_11_2/lib* /u01/app/oracle/product/11.2.0/xe/lib"
 docker exec -t pgsql mkdir -p mkdir -p /u01/app/oracle/product/11.2.0/xe/rdbms/public
 docker exec -t pgsql bash --login -c "cp /fdw_demo/instantclient_11_2/sdk/include/*.h /u01/app/oracle/product/11.2.0/xe/rdbms/public"
-docker exec -t pgsql bash --login -c "echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /etc/profile"
-docker exec -t pgsql bash --login -c "echo 'export PATH=\$ORACLE_HOME/bin:\$PATH' >> /etc/profile"
-docker exec -t pgsql bash --login -c "echo 'export ORACLE_SID=XE' >> /etc/profile"
-docker exec -t pgsql bash --login -c "echo 'export LD_LIBRARY_PATH=\$ORACLE_HOME/lib:\$LD_LIBRARY_PATH' >> /etc/profile"
-docker exec -t pgsql bash --login -c "echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /etc/bashrc"
-docker exec -t pgsql bash --login -c "echo 'export PATH=\$ORACLE_HOME/bin:\$PATH' >> /etc/bashrc"
-docker exec -t pgsql bash --login -c "echo 'export ORACLE_SID=XE' >> /etc/bashrc"
-docker exec -t pgsql bash --login -c "echo 'export LD_LIBRARY_PATH=\$ORACLE_HOME/lib:\$LD_LIBRARY_PATH' >> /etc/bashrc"
+for i in bashrc profile
+do
+  docker exec -t pgsql bash --login -c "echo 'export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe' >> /etc/$i"
+  docker exec -t pgsql bash --login -c "echo 'export PATH=\$ORACLE_HOME/bin:\$PATH' >> /etc/$i"
+  docker exec -t pgsql bash --login -c "echo 'export ORACLE_SID=XE' >> /etc/$i"
+  docker exec -t pgsql bash --login -c "echo 'export LD_LIBRARY_PATH=\$ORACLE_HOME/lib:\$LD_LIBRARY_PATH' >> /etc/$i"
+done
 
 # XXX Yes, this is very ugly...
 docker exec -t pgsql ln -s /u01/app/oracle/product/11.2.0/xe/lib/libclntsh.so.11.1 /u01/app/oracle/product/11.2.0/xe/lib/libclntsh.so
@@ -48,8 +47,13 @@ docker exec -t pgsql ln -s /u01/app/oracle/product/11.2.0/xe/lib/libnnz11.so /li
 ORA_IP=`docker exec -it oracle ifconfig | grep Bcast | awk '{ print $2 }' | cut -f2 -d':' | xargs echo -n`
 sed -i "s/whatismyip/$ORA_IP/" fdw_tests.sql
 docker exec -t pgsql git clone https://github.com/laurenz/oracle_fdw.git
+# As of 2018-02-09, HEAD on the oracle_fdw project doesn't compile with my setup, so go back to an older version
+docker exec -t pgsql git --git-dir=/oracle_fdw/.git --work-tree=/oracle_fdw checkout c8ea6796db19eada30aeb23f4e73fb8b83b84035
 
 # TODO: These commands below don't really work--should be done manually from a Bash prompt
-docker exec -t pgsql make -C /oracle_fdw
-docker exec -t pgsql make -C /oracle_fdw install
-docker exec -t pgsql bash --login -c "psql < /fdw_demo/fdw_tests.sql"
+# docker exec -t pgsql make -C /oracle_fdw
+# docker exec -t pgsql make -C /oracle_fdw install
+
+### Stop PPAS-9.5 service and start manually with pg_ctl as enterprisedb user
+### Haven't had time to figure out why, but it has something to do with enterprisedb OS user env vars
+# docker exec -t pgsql bash --login -c "psql < /fdw_demo/fdw_tests.sql"
