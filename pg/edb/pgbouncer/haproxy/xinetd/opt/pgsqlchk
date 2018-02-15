@@ -1,0 +1,167 @@
+#!/bin/bash
+# /opt/pgsqlchk
+# This script checks if a postgres server is healthy running on localhost. It will
+# return:
+#
+# "HTTP/1.x 200 OK\r" (if postgres is running smoothly)
+#
+# - OR -
+#
+# "HTTP/1.x 500 Internal Server Error\r" (else)
+#
+# The purpose of this script is make haproxy capable of monitoring postgres properly
+#
+
+DEBUG="LIVE"
+
+DOWN="0"
+PSQL="/usr/pgsql-9.2/bin/psql"
+
+### Build master hostname based on vars
+if [[ -z ${PGSQL_HOST} ]]
+then
+    PGSQL_HOST=`hostname -f`
+else
+    logger -p local3.info "${DEBUG} | found PGSQL_HOST in environment...going to use PGSQL_HOST=${PGSQL_HOST} for this iteration"
+fi
+
+if [[ -z ${PGSQL_PORT} ]]
+then
+    PGSQL_PORT="5432"
+else
+    logger -p local3.info "${DEBUG} | found PGSQL_PORT in environment...going to use PGSQL_PORT=${PGSQL_PORT} for this iteration"
+fi
+
+if [[ -z ${PGSQL_MASTERHOST} ]]
+then
+    case ${PGSQL_HOST} in
+        *test*|*staging*)
+            DOM="staging"
+            ;;
+        *dev*)
+            DOM="dev"
+            ;;
+        *)
+            DOM="production"
+            ;;
+    esac
+
+    case ${PGSQL_HOST} in
+        *shard1*)
+            S="shard_db1"
+            ;;
+        *shard2*)
+            S="shard_db2"
+            ;;
+        *)
+            S="db3"
+    esac
+
+    PGSQL_MASTERHOST="${S}-master.${DOM}.example.com"
+else
+    logger -p local3.info "${DEBUG} | found PGSQL_MASTERHOST in environment...going to use PGSQL_MASTERHOST=${PGSQL_MASTERHOST} for this iteration"
+fi
+
+if [[ -z ${PGBOUNCER_PORT} ]]
+then
+    case ${PGSQL_HOST} in
+        *dev*)
+            PGBOUNCER_PORT="6500"
+            ;;
+        *)
+            PGBOUNCER_PORT="6543"
+            ;;
+    esac
+else
+    logger -p local3.info "${DEBUG} | found PGBOUNCER_PORT in environment...going to use PGBOUNCER_PORT=${PGBOUNCER_PORT} for this iteration"
+fi
+
+PGSQL_USERNAME="postgres"
+PGSQL_DATABASE="template1"
+
+########## RECURSIVE FUNCTION TO GET REPLICATION LAG ##########
+# This is for clusters using PostgreSQL Streaming Replication #
+# If a replication node is falling behind, don't use it.      #
+##############################################################
+
+function get_lag() {
+    LAGS=`${PSQL} -h ${1} -p ${PGSQL_PORT} -U ${PGSQL_USERNAME} -Atc "SELECT client_hostname, pg_xlog_location_diff(pg_stat_replication.sent_location, pg_stat_replication.replay_location) FROM pg_stat_replication WHERE application_name = 'walreceiver'"`
+    H=`hostname -f`
+    for L in ${LAGS}
+    do
+        IFS="|" read -a array <<< "${L}"
+        if [[ ${H} =~ ${array[0]} ]]
+        then
+            #logger -p local3.debug "${array[0]} matches ${H} so no need to dig any deeper"
+            echo ${array[1]}
+            break
+        else
+            #logger -p local3.debug "Digging deeper into ${array[0]}"
+            get_lag ${array[0]}
+        fi
+    done
+}
+
+########## DATABASE-INDEPENDENT / HOST-WIDE CHECKS ##########
+# See if postgres is working
+
+C=`${PSQL} -h ${PGSQL_HOST} -p ${PGSQL_PORT} -U ${PGSQL_USERNAME} -c "show port" ${PGSQL_DATABASE}`
+if [[ $? != 0 ]]
+then
+    DOWN=1
+    logger -p local3.error "${DEBUG} | postgres port check failed -- marking host ${PGSQL_HOST} as DOWN"
+fi
+
+# See if pgbouncer is working
+POOLS=`${PSQL} -U postgres -h ${PGSQL_HOST} -p ${PGBOUNCER_PORT} -Atc "show pools" pgbouncer | cut -f1-2 -d '|' | grep -v pgbouncer | grep -E "<database_names>"` # This needs to be filled in properly by the DBA
+if [[ $? != 0 ]]
+then
+    DOWN=1
+    logger -p local3.error "${DEBUG} | haproxy pgbouncer check failed -- marking host ${PGSQL_HOST} as DOWN"
+fi
+
+# See if streaming replication is lagging
+SR_ON=`${PSQL} -h ${PGSQL_HOST} -p ${PGSQL_PORT} -U ${PGSQL_USERNAME} -Atc 'show hot_standby'`
+if [[ ${SR_ON} == "on" ]]
+then
+    LAG=`get_lag ${PGSQL_MASTERHOST}`
+else
+    # Not a slave -- don't trust this machine
+    DOWN=1
+    LAG=0
+    logger -p local3.error "${DEBUG} | standalone server ${PGSQL_HOST} found -- marking host ${PGSQL_HOST} as DOWN"
+fi
+
+if [[ "x${LAG}" == "x" ]]
+then
+    DOWN=1
+    logger -p local3.error "${DEBUG} | could not retrieve lag -- marking host ${PGSQL_HOST} as DOWN"
+fi
+
+if [[ ${LAG} -gt 20000000 ]]
+then
+    DOWN=1
+    logger -p local3.error "${DEBUG} | big lag ${LAG} found -- marking host ${PGSQL_HOST} as DOWN"
+fi
+
+#
+# Check the output. If it is not empty then everything is fine and we return
+# something. Else, we just do not return anything.
+#
+if [[ ${DOWN} -eq 0 ]]
+then
+    # Postgres is fine, return http 200
+    /bin/echo -e "HTTP/1.1 200 OK\r\n"
+    /bin/echo -e "Content-Type: Content-Type: text/plain\r\n"
+    /bin/echo -e "\r\n"
+    /bin/echo -e "Postgres is running with lag ${LAG}.\r\n"
+    /bin/echo -e "\r\n"
+else
+    # Postgres is down, return http 503
+    /bin/echo -e "HTTP/1.1 503 Service Unavailable\r\n"
+    /bin/echo -e "Content-Type: Content-Type: text/plain\r\n"
+    /bin/echo -e "\r\n"
+    /bin/echo -e "Postgres is *down* with lag ${LAG}.\r\n"
+    /bin/echo -e "\r\n"
+fi
+# logger -p local3.debug "${0} done"
