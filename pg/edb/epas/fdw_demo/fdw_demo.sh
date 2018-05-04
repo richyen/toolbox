@@ -27,7 +27,7 @@ docker exec -t pgsql yum -y groupinstall "Development Tools"
 # unzip ./instantclient-sdk-linux.x64-11.2.0.4.0.zip
 docker exec -t pgsql mkdir -p /u01/app/oracle/product/11.2.0/xe/lib
 docker exec -t pgsql bash --login -c "cp /fdw_demo/instantclient_11_2/lib* /u01/app/oracle/product/11.2.0/xe/lib"
-docker exec -t pgsql mkdir -p mkdir -p /u01/app/oracle/product/11.2.0/xe/rdbms/public
+docker exec -t pgsql mkdir -p /u01/app/oracle/product/11.2.0/xe/rdbms/public
 docker exec -t pgsql bash --login -c "cp /fdw_demo/instantclient_11_2/sdk/include/*.h /u01/app/oracle/product/11.2.0/xe/rdbms/public"
 for i in bashrc profile
 do
