@@ -15,4 +15,3 @@ do
     COUNTER=${C}
     sleep 30
 done
-

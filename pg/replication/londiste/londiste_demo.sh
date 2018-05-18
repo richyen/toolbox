@@ -24,7 +24,7 @@ database_list = ${MASTER_DB}
 logfile = log/ticker.log
 pidfile = pid/ticker.pid
 EOF
-pgqd -d ticker.ini 
+pgqd -d ticker.ini
 
 ### Register the master DB and start worker
 cat << EOF > master.ini

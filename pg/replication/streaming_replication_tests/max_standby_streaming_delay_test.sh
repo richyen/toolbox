@@ -11,7 +11,7 @@ createdb -h ${MASTER_IP} bench
 pgbench -i -F 50 -s 50 -h ${MASTER_IP} bench 2> /dev/null
 
 # See if max_standby_streaming_delay cancels a query
-sed -i "s/max_standby_streaming_delay.*/max_standby_streaming_delay = 10s/" /var/lib/ppas/9.5/data/postgresql.conf 
+sed -i "s/max_standby_streaming_delay.*/max_standby_streaming_delay = 10s/" /var/lib/ppas/9.5/data/postgresql.conf
 psql -Atc "select pg_reload_conf()"
 psql -Atc "show max_standby_streaming_delay"
 psql -h ${MASTER_IP} -c "DELETE FROM pgbench_accounts where aid between 0 and 10000" bench
@@ -20,7 +20,7 @@ psql -h ${MASTER_IP} -c "vacuum" bench
 sleep 120 # Wait for pg_sleep to get canceled
 
 # Try again
-sed -i "s/max_standby_streaming_delay.*/max_standby_streaming_delay = 60s/" /var/lib/ppas/9.5/data/postgresql.conf 
+sed -i "s/max_standby_streaming_delay.*/max_standby_streaming_delay = 60s/" /var/lib/ppas/9.5/data/postgresql.conf
 psql -Atc "select pg_reload_conf()"
 psql -Atc "show max_standby_streaming_delay"
 psql -h ${MASTER_IP} -c "DELETE FROM pgbench_accounts where aid between 10000 and 20000" bench
@@ -35,7 +35,7 @@ psql -h ${MASTER_IP} -c "vacuum" bench
 sleep 120 # This pg_sleep should get canceled
 
 # Try again
-sed -i "s/max_standby_streaming_delay.*/max_standby_streaming_delay = 120s/" /var/lib/ppas/9.5/data/postgresql.conf 
+sed -i "s/max_standby_streaming_delay.*/max_standby_streaming_delay = 120s/" /var/lib/ppas/9.5/data/postgresql.conf
 psql -Atc "select pg_reload_conf()"
 psql -Atc "show max_standby_streaming_delay"
 psql -h ${MASTER_IP} -c "DELETE FROM pgbench_accounts where aid between 30000 and 40000" bench
