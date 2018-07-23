@@ -3,7 +3,7 @@
 export PGDATA="/etc/postgresql/10/main"
 
 # Install dependencies
-apt-get -y -qq install ca-certificates
+apt-get -y -qq install ca-certificates sudo
 
 # Install Postgres
 echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list
