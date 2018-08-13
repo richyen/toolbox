@@ -35,4 +35,3 @@ set -x
 PGPASSWORD=bar123 psql -h `docker-machine ip docker-vm` -p 6432 -U baruser -Atc "SELECT 'success'" foodb
 PGPASSWORD=bar123 psql -h `docker-machine ip docker-vm` -p 6432 -U baruser -Atc "SELECT 'success'" bardb
 PGPASSWORD=bar890 psql -h `docker-machine ip docker-vm` -p 6432 -U baruser -Atc "SELECT 'success'" bardb
-
