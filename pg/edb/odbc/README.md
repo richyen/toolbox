@@ -1,4 +1,4 @@
-A quick startup guide for setting up ODBC on CentOS
+A quick startup guide for setting up ODBC
 
 1. execute following command odbcinst -j on terminal.You will see following output and confirm that you have updated respective odbc.ini file.
 ```
