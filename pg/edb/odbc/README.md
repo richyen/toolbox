@@ -2,7 +2,7 @@ A quick startup guide for setting up ODBC on CentOS
 
 1. execute following command odbcinst -j on terminal.You will see following output and confirm that you have updated respective odbc.ini file.
 ```
-user@ubuntu:~/Downloads/unixODBC-2.3.1$ odbcinst -j
+user@localhost:~$ odbcinst -j
 unixODBC 2.2.14
 DRIVERS............: /etc/odbcinst.ini
 SYSTEM DATA SOURCES: /etc/odbc.ini
@@ -32,7 +32,7 @@ CommLog=1
 ```
 3. Use 'isql' utility ( installed as part of unixODBC) to confirm if DSN is configured correctly.
 ```
-user@ubuntu:~/Downloads/unixODBC-2.3.1$ isql  edb -v3
+user@localhost:~$ isql  edb -v3
 +---------------------------------------+
 | Connected!                            |
 |                                       |
