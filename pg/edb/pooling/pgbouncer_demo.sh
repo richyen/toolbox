@@ -17,7 +17,7 @@ done
 
 docker exec -it pg1 psql -c "CREATE USER foouser with password 'abc123'"
 docker exec -it pg2 psql -c "CREATE USER baruser with password 'abc123'"
-docker exec ${PGB_NAME} rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-9.6-4.noarch.rpm
+docker exec ${PGB_NAME} rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
 docker exec ${PGB_NAME} sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/edb.repo
 docker exec ${PGB_NAME} yum --enablerepo=enterprisedb-tools -y install edb-pgbouncer17
 docker exec ${PGB_NAME} cp /conf/edb-pgbouncer-1.7.ini /etc/sysconfig/edb/pgbouncer1.7/
