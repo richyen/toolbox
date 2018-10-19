@@ -15,8 +15,8 @@ ENV PATH=/usr/pgsql-${PGMAJOR}/bin:${PATH}
 RUN rpm -ivh ${RPM_URL}
 
 # run update and install require packages.
-RUN yum -y update
 RUN yum -y install yum-plugin-ovl
+RUN yum -y update
 RUN yum -y install postgresql${PGVERNUM}-server.x86_64
 
 RUN echo 'root:root'|chpasswd
