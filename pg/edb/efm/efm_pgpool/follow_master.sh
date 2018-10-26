@@ -3,7 +3,7 @@ PCP_USER=enterprisedb      # PCP user name
 PCP_PORT=9898              # PCP port number as in pgpool.conf
 PCP_HOST=172.22.0.53       # hostname of Pgpool-II
 PGPOOL_PATH=/usr/edb/pgpool3.6/bin
-export PCPPASSFILE=/tmp/.pcppass
+export PCPPASSFILE=/tmp/.pcppass_follow
 
 # Execute command by failover.
 # special values:  %d = node id
@@ -17,13 +17,17 @@ export PCPPASSFILE=/tmp/.pcppass
 #                  %R = new master database cluster path
 #                  %r = new master port number
 #                  %% = '%' character
-failed_node_id=$1
+detached_node_id=$1
 old_master_id=$2
 
-echo failed_node_id $1
+echo detached_node_id $1
 echo old_master_id $2
 
-if [ $failed_node_id -ne $old_master_id ]; then
+## If $detached_node_id is equal to $old_master_id,
+## then do nothing, since the old master is no longer
+## supposed to be part of the cluster.
+
+if [ $detached_node_id -ne $old_master_id ]; then
     sleep 10
-    $PGPOOL_PATH/pcp_attach_node -w -U $PCP_USER -h $PCP_HOST -p $PCP_PORT $failed_node_id
+    $PGPOOL_PATH/pcp_attach_node -w -U $PCP_USER -h $PCP_HOST -p $PCP_PORT $detached_node_id
 fi
