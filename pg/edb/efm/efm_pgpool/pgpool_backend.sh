@@ -9,7 +9,7 @@
 #! /bin/sh
 PCP_USER=enterprisedb      # PCP user name
 PCP_PORT=9898              # PCP port number as in pgpool.conf
-PCP_HOST=172.22.0.53       # hostname of Pgpool-II
+PCP_HOST=172.23.0.53       # hostname of Pgpool-II
 PGPOOL_PATH=/usr/edb/pgpool3.6/bin
 export PCPPASSFILE=/tmp/.pcppass
 

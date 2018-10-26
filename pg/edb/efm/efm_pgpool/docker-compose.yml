@@ -10,7 +10,7 @@ services:
       - ./:/docker
     networks:
       app_net:
-        ipv4_address: 172.22.0.50
+        ipv4_address: 172.23.0.50
   slave1:
     image: efmpgpool:latest
     container_name: slave1
@@ -20,7 +20,7 @@ services:
       - ./:/docker
     networks:
       app_net:
-        ipv4_address: 172.22.0.51
+        ipv4_address: 172.23.0.51
   slave2:
     image: efmpgpool:latest
     container_name: slave2
@@ -30,7 +30,7 @@ services:
       - ./:/docker
     networks:
       app_net:
-        ipv4_address: 172.22.0.52
+        ipv4_address: 172.23.0.52
   witness:
     image: efmpgpool:latest
     container_name: witness
@@ -40,10 +40,10 @@ services:
       - ./:/docker
     networks:
       app_net:
-        ipv4_address: 172.22.0.53
+        ipv4_address: 172.23.0.53
 networks:
   app_net:
     driver: bridge
     ipam:
      config:
-       - subnet: 172.22.0.0/24
+       - subnet: 172.23.0.0/24
