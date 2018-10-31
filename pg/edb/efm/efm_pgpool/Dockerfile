@@ -17,10 +17,10 @@ RUN cp ${SYSCONFDIR}/pcp.conf.sample                        ${SYSCONFDIR}/pcp.co
 RUN echo "enterprisedb:e99a18c428cb38d5f260853678922e03" >> ${SYSCONFDIR}/pcp.conf
 RUN cp ${SYSCONFDIR}/pool_hba.conf.sample                   ${SYSCONFDIR}/pool_hba.conf
 RUN chown -R enterprisedb:enterprisedb                      ${SYSCONFDIR}
-RUN echo "172.23.0.53:9898:enterprisedb:abc123" > /tmp/.pcppass
+RUN echo "172.22.77.53:9898:enterprisedb:abc123" > /tmp/.pcppass
 RUN chown efm:efm /tmp/.pcppass
 RUN chmod 600 /tmp/.pcppass
-RUN echo "172.23.0.53:9898:enterprisedb:abc123" > /tmp/.pcppass_follow
+RUN echo "172.22.77.53:9898:enterprisedb:abc123" > /tmp/.pcppass_follow
 RUN chown enterprisedb:enterprisedb /tmp/.pcppass_follow
 RUN chmod 600 /tmp/.pcppass_follow
 
