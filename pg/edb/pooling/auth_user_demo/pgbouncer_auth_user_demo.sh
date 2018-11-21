@@ -1,6 +1,6 @@
 #!/bin/bash
 
-I_NAME='ppas95:latest'
+I_NAME='epas10:latest'
 
 PGB_NAME='pgb'
 docker rm -f ${PGB_NAME}
@@ -21,7 +21,7 @@ docker exec -it pg1 psql -c "CREATE USER baruser with password 'bar123'"
 docker exec -it pg2 psql -c "CREATE USER baruser with password 'bar890'"
 docker exec -it pg1 psql -c "CREATE OR REPLACE FUNCTION user_search(uname TEXT) returns table(usename name, passwd text)as \$\$ SELECT usename, passwd FROM pg_shadow WHERE usename=\$1  \$\$ language sql SECURITY DEFINER;"
 docker exec -it pg2 psql -c "CREATE OR REPLACE FUNCTION user_search(uname TEXT) returns table(usename name, passwd text)as \$\$ SELECT usename, passwd FROM pg_shadow WHERE usename=\$1  \$\$ language sql SECURITY DEFINER;"
-docker exec ${PGB_NAME} rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-9.6-4.noarch.rpm
+docker exec ${PGB_NAME} rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
 docker exec ${PGB_NAME} sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/edb.repo
 docker exec ${PGB_NAME} yum --enablerepo=enterprisedb-tools -y install edb-pgbouncer17
 docker exec ${PGB_NAME} cp /conf/edb-pgbouncer-1.7.ini /etc/sysconfig/edb/pgbouncer1.7/
@@ -32,6 +32,6 @@ docker exec ${PGB_NAME} /etc/init.d/edb-pgbouncer-1.7 start
 sleep 5
 
 set -x
-PGPASSWORD=bar123 psql -h `docker-machine ip docker-vm` -p 6432 -U baruser -Atc "SELECT 'success'" foodb
-PGPASSWORD=bar123 psql -h `docker-machine ip docker-vm` -p 6432 -U baruser -Atc "SELECT 'success'" bardb
-PGPASSWORD=bar890 psql -h `docker-machine ip docker-vm` -p 6432 -U baruser -Atc "SELECT 'success'" bardb
+PGPASSWORD=bar123 psql -h 127.0.0.1 -p 6432 -U baruser -Atc "SELECT 'success'" foodb
+PGPASSWORD=bar123 psql -h 127.0.0.1 -p 6432 -U baruser -Atc "SELECT 'success'" bardb
+PGPASSWORD=bar890 psql -h 127.0.0.1 -p 6432 -U baruser -Atc "SELECT 'success'" bardb
