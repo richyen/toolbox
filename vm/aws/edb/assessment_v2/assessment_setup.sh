@@ -32,8 +32,8 @@ echo "export PATH=${PATH}" >> /etc/profile
 
 ### Initialize new database
 rm -rf ${PGDATA}
-sudo -u postgres ${PGINSTALL}/initdb -D ${PGDATA}
-sudo -u postgres ${PGINSTALL}/pg_ctl -D ${PGDATA} -l ${PGDATA}/logfile start
+sudo -lu postgres ${PGINSTALL}/initdb -D ${PGDATA}
+sudo -lu postgres ${PGINSTALL}/pg_ctl -D ${PGDATA} -l ${PGDATA}/logfile start
 psql -c "ALTER SYSTEM SET log_statement TO 'all'"
 psql -c "ALTER SYSTEM SET log_min_duration_statement TO 0"
 psql -c "ALTER SYSTEM SET log_checkpoints TO on"
