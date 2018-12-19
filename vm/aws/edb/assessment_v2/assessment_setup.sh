@@ -18,8 +18,8 @@ echo "export HISTTIMEFORMAT=\"%Y-%m-%d %T \"" >> /etc/bashrc
 echo "PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t \"\$USER[\$\$] \$SSH_CONNECTION\")'" >> /etc/bashrc
 
 rpm -ivh https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-2.noarch.rpm
-yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum -y install vim sudo git postgresql10-server pgbouncer
+yum -q -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum -q -y install vim sudo git postgresql10-server pgbouncer
 
 ### Prepare user
 mkdir ${PGHOME}/.ssh
