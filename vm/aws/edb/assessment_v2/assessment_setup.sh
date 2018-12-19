@@ -31,6 +31,7 @@ echo 'postgres    ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 echo "export PATH=${PATH}" >> /etc/profile
 
 ### Initialize new database
+rm -rf ${PGDATA}
 sudo -u postgres ${PGINSTALL}/initdb -D ${PGDATA}
 sudo -u postgres ${PGINSTALL}/pg_ctl -D ${PGDATA} -l ${PGDATA}/logfile start
 psql -c "ALTER SYSTEM SET log_statement TO 'all'"
