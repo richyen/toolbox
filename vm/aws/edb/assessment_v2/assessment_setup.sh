@@ -2,8 +2,10 @@
 
 ### Provision a VM for assessment
 
-### TODO: Set accordingly
-SSH_PUB_KEY="######"
+# Take in env variable, or use commandline arg
+: "${SSH_PUB_KEY:=$1}"
+: "${SSH_PUB_KEY:?Need to set SSH_PUB_KEY}"
+echo "${SSH_PUB_KEY}"
 
 ### Environment
 export PGUSER=postgres
