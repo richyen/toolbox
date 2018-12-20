@@ -29,6 +29,7 @@ echo ${SSH_PUB_KEY} >> ${PGHOME}/.ssh/authorized_keys
 chmod 700 ${PGHOME}/.ssh
 chmod 600 ${PGHOME}/.ssh/authorized_keys
 chown -R postgres:postgres ${PGHOME}
+restorecon -r -vv /var/lib/pgsql/.ssh    ### See https://ubuntuforums.org/showthread.php?t=1932058&s=00b938a71d52ba6c47b581befd8e71f6&p=12472161#post12472161
 echo 'postgres    ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 echo "export PATH=${PATH}" >> /etc/profile
 
@@ -49,3 +50,4 @@ psql -c "SELECT pg_reload_conf()"
 
 chown -R pgbouncer:pgbouncer /etc/pgbouncer
 echo '"benchuser" "md5f141e18e8635983f5f719a405cf1a49d"' > /tmp/userlist.txt
+curl -s "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment_v2/edbstore.sql" > /tmp/edbstore.sql
