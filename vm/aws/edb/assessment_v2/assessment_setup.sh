@@ -35,7 +35,7 @@ echo "export PATH=${PATH}" >> /etc/profile
 
 ### Initialize new database
 rm -rf ${PGDATA}/*
-sudo -iu postgres ${PGINSTALL}/initdb -D ${PGDATA}
+sudo -iu postgres ${PGINSTALL}/initdb -D ${PGDATA} --auth=peer --auth-host=password
 sudo -iu postgres ${PGINSTALL}/pg_ctl -D ${PGDATA} -l ${PGDATA}/logfile start
 psql -c "ALTER SYSTEM SET log_statement TO 'all'"
 psql -c "ALTER SYSTEM SET log_min_duration_statement TO 0"
