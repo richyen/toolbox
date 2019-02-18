@@ -1,0 +1,145 @@
+---
+version: '3'
+services:
+
+#-----------------
+# PUBLIC
+#-----------------
+    client:
+        image: efm:3.3
+        container_name: efm-client
+        privileged: true
+        tty: true
+        ports:
+          - "5430"
+          - "5432"
+        volumes:
+          - /Users/richyen/Desktop:/docker
+        networks:
+            public:
+                ipv4_address: 10.111.220.11
+
+#-----------------
+# local
+#-----------------
+    master:
+        image: efm:3.3
+        container_name: efm-master
+        depends_on:
+            - client
+        privileged: true
+        tty: true
+        ports:
+          - "5430"
+          - "5432"
+        volumes:
+          - /Users/richyen/Desktop:/docker
+        networks:
+            public:
+                ipv4_address: 10.111.220.21
+            local:
+                ipv4_address: 10.111.221.21
+
+    standby:
+        image: efm:3.3
+        container_name: efm-standby
+        privileged: true
+        tty: true
+        ports:
+          - "5430"
+          - "5432"
+        volumes:
+          - /Users/richyen/Desktop:/docker
+        networks:
+            public:
+                ipv4_address: 10.111.220.22
+            local:
+                ipv4_address: 10.111.221.22
+
+    witness:
+        image: efm:3.3
+        container_name: efm-witness
+        depends_on:
+            - master
+        privileged: true
+        tty: true
+        ports:
+          - "5430"
+          - "5432"
+        volumes:
+          - /Users/richyen/Desktop:/docker
+        networks:
+            local:
+                ipv4_address: 10.111.221.23
+
+#-----------------
+# DR
+#-----------------
+    dr_master:
+        image: efm:3.3
+        container_name: dr-master
+        depends_on:
+            - client
+        privileged: true
+        tty: true
+        ports:
+          - "5430"
+          - "5432"
+        volumes:
+          - /Users/richyen/Desktop:/docker
+        networks:
+            public:
+                ipv4_address: 10.111.220.31
+            colo:
+                ipv4_address: 10.111.222.31
+
+    dr_standby:
+        image: efm:3.3
+        container_name: dr-standby
+        depends_on:
+            - dr_master
+        privileged: true
+        tty: true
+        ports:
+          - "5430"
+          - "5432"
+        volumes:
+          - /Users/richyen/Desktop:/docker
+        networks:
+            public:
+                ipv4_address: 10.111.220.32
+            colo:
+                ipv4_address: 10.111.222.32
+
+    dr_witness:
+        image: efm:3.3
+        container_name: dr-witness
+        depends_on:
+            - dr_master
+        privileged: true
+        tty: true
+        ports:
+          - "5430"
+          - "5432"
+        volumes:
+          - /Users/richyen/Desktop:/docker
+        networks:
+            colo:
+                ipv4_address: 10.111.222.33
+
+networks:
+    public:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.111.220.1/24
+    local:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.111.221.1/24
+    colo:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.111.222.1/24
