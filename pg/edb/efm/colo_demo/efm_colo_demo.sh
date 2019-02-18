@@ -2,7 +2,6 @@
 
 VER='3.3'
 IMAGE_NAME="efm:${VER}"
-# INSTALLDIR="/usr/efm-${VER}"
 INSTALLDIR="/usr/edb/efm-${VER}"
 
 if [[ ${1} == 'destroy' ]]
@@ -27,19 +26,19 @@ docker exec -t efm-master ${INSTALLDIR}/bin/efm allow-node efm 10.111.220.32
 
 # Set up standby
 printf "\e[0;32m>>> SETTING UP STREAMING REPLICATION\n\e[0m"
-docker exec -t efm-standby bash --login -c "echo 10.111.220.21:5430 10.111.220.22:5430 >> /etc/edb/efm-${VER}/efm.nodes"
+docker exec -t efm-standby sed -i "s/\`hostname -i\`/10.111.220.22/" ${INSTALLDIR}/bin/set_as_standby.sh
 docker exec -t efm-standby bash --login -c "${INSTALLDIR}/bin/set_as_standby.sh 10.111.220.21"
 
 printf "\e[0;32m>>> REGISTERING STANDBY2 INTO EFM\n\e[0m"
 # Set up standby
 printf "\e[0;32m>>> SETTING UP STREAMING REPLICATION\n\e[0m"
-docker exec -t dr-master bash --login -c "echo 10.111.220.21:5430 10.111.220.22:5430 10.111.220.31:5430 >> /etc/edb/efm-${VER}/efm.nodes"
+docker exec -t dr-master sed -i "s/\`hostname -i\`/10.111.220.31/" ${INSTALLDIR}/bin/set_as_standby.sh
 docker exec -t dr-master bash --login -c "${INSTALLDIR}/bin/set_as_standby.sh 10.111.220.21"
 
 printf "\e[0;32m>>> REGISTERING STANDBY3 INTO EFM\n\e[0m"
 # Set up standby
 printf "\e[0;32m>>> SETTING UP STREAMING REPLICATION\n\e[0m"
-docker exec -t dr-standby bash --login -c "echo 10.111.220.21:5430 10.111.220.22:5430 10.111.220.31:5430 10.111.220.32:5430 >> /etc/edb/efm-${VER}/efm.nodes"
+docker exec -t dr-standby sed -i "s/\`hostname -i\`/10.111.220.32/" ${INSTALLDIR}/bin/set_as_standby.sh
 docker exec -t dr-standby bash --login -c "${INSTALLDIR}/bin/set_as_standby.sh 10.111.220.21"
 
 # Verify replication is working
@@ -60,7 +59,6 @@ docker exec -t efm-master ${INSTALLDIR}/bin/efm allow-node efm ${WITNESS_IP}
 
 # Set up witness
 printf "\e[0;32m>>> STARTING UP WITNESS EFM PROCESS\n\e[0m"
-docker exec -t efm-witness bash --login -c "echo 10.111.220.21:5430 10.111.220.22:5430 10.111.220.31:5430 10.111.220.32:5430 >> /etc/edb/efm-${VER}/efm.nodes"
 docker exec -t efm-witness ${INSTALLDIR}/bin/set_as_witness.sh
 
 # Show status
