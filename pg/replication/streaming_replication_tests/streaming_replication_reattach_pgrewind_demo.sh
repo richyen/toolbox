@@ -13,7 +13,7 @@ rm -rf /tmp/${NPORT}/data
 rm -rf /tmp/arch
 
 set -x
-#set -e
+set -e
 mkdir -p /tmp/arch
 
 initdb -D /tmp/${OPORT}/data
@@ -44,10 +44,10 @@ echo "restore_command='cp /tmp/arch/%f %p'" >> /tmp/${NPORT}/data/recovery.conf
 echo "recovery_target_timeline = 'latest'" >> /tmp/${NPORT}/data/recovery.conf
 pg_ctl -D /tmp/${NPORT}/data start
 sleep 5
-psql -p${NPORT} -c "select pg_is_in_recovery()"
-psql -p${NPORT} postgres -c"create table mc1 (id int);"
-psql -p${NPORT} postgres -c"insert into mc1 values (generate_series(1,100000));"
+psql -p${OPORT} postgres -c"create table mc1 (id int);"
+psql -p${OPORT} postgres -c"insert into mc1 values (generate_series(1,100000));"
 sleep 5
+psql -p${NPORT} -c "select pg_is_in_recovery()"
 psql -p${NPORT} postgres -c"select count(*) from mc1"
 psql -p ${NPORT} -c 'select pg_last_wal_receive_lsn() "receive_lsn", pg_last_wal_replay_lsn() "replay_lsn", pg_is_in_recovery() "recovery_status";'
 
