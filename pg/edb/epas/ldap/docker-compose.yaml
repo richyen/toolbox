@@ -1,0 +1,39 @@
+version: '3'
+services:
+  ldap-service:
+    image: osixia/openldap:1.1.11
+    container_name: ldap-service
+    hostname: ldap-service
+    ports:
+      - "389:389"
+      - "689:689"
+    volumes:
+      - /Users/richyen/Desktop/:/docker
+      - ./certs:/container/service/slapd/assets/certs
+    environment:
+      - LDAP_TLS_VERIFY_CLIENT=try
+      - LDAP_TLS_CRT_FILENAME=ldap.crt
+      - LDAP_TLS_KEY_FILENAME=ldap.key
+      - LDAP_TLS_CA_CRT_FILENAME=ca.crt
+    command: --copy-service
+  console:
+    image: osixia/phpldapadmin:0.7.2
+    container_name: phpldapadmin-service
+    hostname: phpldapadmin-service
+    depends_on:
+      - ldap-service
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=ldap-service
+    ports:
+      - "6443:443"
+  database:
+    image: postgres-11:latest
+    links:
+      - ldap-service
+    container_name: pg
+    hostname: pg
+    privileged: true
+    ports:
+      - "5432:5432"
+    volumes:
+      - /Users/richyen/Desktop/:/docker
