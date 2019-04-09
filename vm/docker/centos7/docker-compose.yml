@@ -1,0 +1,10 @@
+version: '3'
+services:
+  centos:
+    image: centos:7
+    container_name: centos7
+    hostname: centos7
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+    command: "/usr/sbin/init"
