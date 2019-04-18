@@ -19,6 +19,7 @@ RUN cp /instantclient_12_2/lib* ${ohome}/lib
 RUN mkdir -p ${ohome}/rdbms/public
 RUN cp /instantclient_12_2/sdk/include/*.h ${ohome}/rdbms/public
 RUN cp /instantclient_12_2/ojdbc8.jar /usr/edb/migrationtoolkit/lib/
+# COPY ojdbc7.jar /usr/edb/migrationtoolkit/lib/
 
 RUN echo "export ORACLE_HOME=${ohome}" >> /etc/bashrc
 RUN echo 'export PATH=$ORACLE_HOME/bin:$PATH' >> /etc/bashrc

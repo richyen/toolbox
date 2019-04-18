@@ -1,15 +1,12 @@
 #!/bin/bash
 
 echo "tests starting at `date`"
-#increment=500000
-increment=5
-#for rs in 1000 2000 4000 8000 16000
-for rs in 1000
+increment=500000
+for rs in 1000 2000 4000 8000 16000
 do
   echo "row size $rs starting at `date`"
   docker exec -t ora_host bash --login -c "echo 'truncate table hr.foolob' | sqlplus -S sys/Oradoc_db1 as sysdba"
-  #for nr in `seq 500000 ${increment} 5000000`
-  for nr in `seq 5 ${increment} 30`
+  for nr in `seq 500000 ${increment} 5000000`
   do
     echo "inner loop $nr/$rs starting at `date`"
     docker exec -it pg_host  psql -c "drop schema hr cascade"
