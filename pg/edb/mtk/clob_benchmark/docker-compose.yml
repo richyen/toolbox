@@ -1,7 +1,7 @@
 version: '3'
 services:
   ora_host:
-    image: oracle:11g
+    image: store/oracle/database-enterprise:12.2.0.1
     container_name: ora_host
     hostname: ora_host
     tty: true
