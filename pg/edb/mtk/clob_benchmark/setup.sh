@@ -5,6 +5,7 @@
 # 3. stop edb-as-11 in pg_host container
 # 4. log into pg_host container as enterprisedb and start manually with pg_ctl (so it picks up the ORACLE environment variables)
 # 5. run ora_setup.sql to create tables
+# 6. Manual steps: add data via my_proc, extend TEMP, UNDO, FOOCLOB tablespaces as needed
 
 #docker-compose down
 #docker-compose up -d
@@ -19,3 +20,4 @@ do
 done
 
 docker exec -t ora_host bash --login -c "sqlplus -S sys/Oradoc_db1 as sysdba < /docker/ora_setup.sql"
+docker exec -u enterprisedb -t pg_host bash --login -c "CREATE DATABASE LINK my_testlink connect to hr identified by 'HR' using oci '//ora_host/ORCLCDB.localdomain'"
