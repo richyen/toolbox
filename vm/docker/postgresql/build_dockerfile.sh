@@ -7,7 +7,8 @@ fi
 
 PGMAJOR=${1}
 PGVERNUM=`echo ${PGMAJOR} | sed "s/\.//g"`
-RPM_URL=`curl -s https://yum.postgresql.org/repopackages.php | grep ${PGMAJOR} | grep https | grep "CentOS 6" | grep x86_64 | sed "s/.*https/https/" | sed "s/rpm.*/rpm/"`
+# RPM_URL=`curl -s https://yum.postgresql.org/repopackages.php | grep ${PGMAJOR} | grep https | grep "CentOS 6" | grep x86_64 | sed "s/.*https/https/" | sed "s/rpm.*/rpm/"`
+RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
 mkdir -p ${PGMAJOR}
 cp Dockerfile.template ${PGMAJOR}/Dockerfile
