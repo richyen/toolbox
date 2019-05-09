@@ -23,11 +23,10 @@ RUN yum -y install postgresql${PGVERNUM}-server.x86_64
 RUN echo 'root:root'|chpasswd
 
 # setting postgres user for login
-RUN adduser --home-dir /home/postgres --create-home postgres
 RUN echo 'postgres   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 RUN echo 'postgres:postgres'|chpasswd
 
-RUN gosu enterprisedb initdb -D ${PGDATA}
+RUN gosu postgres initdb -D ${PGDATA}
 # RUN service postgresql-${PGMAJOR} initdb
 
 RUN echo "export PGPORT=${PGPORT}"         >> /etc/profile.d/pg_env.sh
