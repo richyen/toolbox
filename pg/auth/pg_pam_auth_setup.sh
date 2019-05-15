@@ -16,7 +16,7 @@ chmod 755 /mytest.sh
 
 yum -y install epel-release pam-devel.x86_64 pamtester
 
-echo "auth required /lib64/security/pam_exec.so expose_authtok /mytest.sh" > /etc/pam.d/my-service
+echo "auth required pam_exec.so expose_authtok /mytest.sh" > /etc/pam.d/my-service
 echo "account required pam_permit.so" >> /etc/pam.d/my-service
 
 # At this point, you should be able to call `pamtester my-service abc authenticate`
