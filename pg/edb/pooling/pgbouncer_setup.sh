@@ -34,8 +34,6 @@ fi
 export PGPASSWORD='abc123'
 psql -h ${IP} -U ${SUPERUSER} -c "select 'password worked'"
 
-PASSWORD_HASH=`psql -h ${IP} -U ${SUPERUSER} -Atc "select passwd from pg_shadow where usename = '${SUPERUSER}'"`
-
 # install pgbouncer
 yum -y ${ADDL_REPOS} install ${PGB_VERSION}
 
@@ -56,7 +54,8 @@ sed "/^\[databases\]/a  prodb = host=${IP} port=5432 dbname=${DBNAME} pool_size=
 # create bouncer_hba
 echo "host  all  all  0.0.0.0/0 trust" >> ${CONF_DIR}/bouncer_hba.conf
 
-# set password
+# set userlist
+PASSWORD_HASH=`echo -n "${PGPASSWORD}${SUPERUSER}" | md5sum | cut -f1 -d' '`
 echo "\"${SUPERUSER}\" \"${PASSWORD_HASH}\"" >> ${CONF_DIR}/userlist.txt
 
 # start pgbouncer
