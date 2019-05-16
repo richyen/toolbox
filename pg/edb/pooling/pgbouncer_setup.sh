@@ -1,6 +1,7 @@
 #!/bin/bash
 
 IP=${1}
+DBNAME="postgres"
 
 if [[ "${IP}x" == "x" ]]
 then
@@ -8,12 +9,26 @@ then
   exit 1
 fi
 
-PGB_VERSION="edb-pgbouncer19"
-PGB_SERVICE="edb-pgbouncer-1.9"
-CONF_DIR="/etc/edb/pgbouncer1.9"
+PGB_VERSION="pgbouncer"
+PGB_SERVICE="pgbouncer"
+CONF_DIR="/etc/pgbouncer"
 CONF_FILE="${PGB_SERVICE}.ini"
-LOG_FILE="/var/log/edb/pgbouncer1.9/${PGB_SERVICE}.log"
-SUPERUSER="enterprisedb"
+LOG_FILE="/var/log/pgbouncer/${PGB_SERVICE}.log"
+SUPERUSER="postgres"
+ADDL_REPOS=""
+
+if [[ "${DBNAME}" == "edb" ]]
+then
+  PGB_VERSION="edb-pgbouncer19"
+  PGB_SERVICE="edb-pgbouncer-1.9"
+  CONF_DIR="/etc/edb/pgbouncer1.9"
+  CONF_FILE="${PGB_SERVICE}.ini"
+  LOG_FILE="/var/log/edb/pgbouncer1.9/${PGB_SERVICE}.log"
+  SUPERUSER="enterprisedb"
+  DBNAME="edb"
+  ADDL_REPOS="--enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies"
+fi
+
 
 # verify target database connectivity
 export PGPASSWORD='abc123'
@@ -22,7 +37,7 @@ psql -h ${IP} -U ${SUPERUSER} -c "select 'password worked'"
 PASSWORD_HASH=`psql -h ${IP} -U ${SUPERUSER} -Atc "select passwd from pg_shadow where usename = '${SUPERUSER}'"`
 
 # install pgbouncer
-yum -y --enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies install ${PGB_VERSION}
+yum -y ${ADDL_REPOS} install ${PGB_VERSION}
 
 # configure pgbouncer
 sed -e "s@^listen_addr = 127.0.0.1@listen_addr = *@g" \
@@ -36,7 +51,7 @@ sed -e "s@^listen_addr = 127.0.0.1@listen_addr = *@g" \
  -i ${CONF_DIR}/${CONF_FILE}
 
 # create databases for pgbouncer
-sed "/^\[databases\]/a  prodb = host=${IP} port=5432 dbname=edb pool_size=50" -i ${CONF_DIR}/${CONF_FILE}
+sed "/^\[databases\]/a  prodb = host=${IP} port=5432 dbname=${DBNAME} pool_size=50" -i ${CONF_DIR}/${CONF_FILE}
 
 # create bouncer_hba
 echo "host  all  all  0.0.0.0/0 trust" >> ${CONF_DIR}/bouncer_hba.conf
