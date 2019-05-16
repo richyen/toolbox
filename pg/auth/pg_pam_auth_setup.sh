@@ -5,7 +5,7 @@
 cat << _EOF_ > /mytest.sh
 #!/bin/sh
 read password
-if [ "$PAM_USER" == "abc" ] && [ "$password" == "123" ] ; then
+if [ "\$PAM_USER" == "abc" ] && [ "\$password" == "123" ] ; then
  exit 0
 else
  exit 1
