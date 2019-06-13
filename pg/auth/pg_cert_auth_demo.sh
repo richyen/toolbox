@@ -4,6 +4,8 @@
 
 PGDATA="/var/lib/pgsql/11/data"
 PGUSER="postgres"
+PGDATABASE="postgres"
+SERVICE="postgresql-11"
 
 # Create server cert
 openssl req -new -text -nodes -subj "/C=US/ST=Massachusetts/L=Bedford/O=EnterpriseDB/OU=XDB/emailAddress=support@enterprisedb.com/CN=${PGUSER}" -keyout ${PGDATA}/server.key -out ${PGDATA}/server.csr
@@ -29,10 +31,10 @@ echo "sslusers ${PGUSER} ${PGUSER}" >  ${PGDATA}/pg_ident.conf
 echo "sslusers root      ${PGUSER}" >> ${PGDATA}/pg_ident.conf
 
 # Restart server
-service postgresql-11 restart
+service ${SERVICE} restart
 
 # Attempt to log in unsuccessfully
-psql -h 127.0.0.1 -c "SELECT 'this should have failed'" postgres postgres
+psql -h 127.0.0.1 -c "SELECT 'this should have failed'" ${PGDATABASE} ${PGUSER}
 
 # Create client cert
 # Note that in the real world, a new cert may need to be generated.
@@ -44,4 +46,4 @@ cp ${PGDATA}/server.crt ~/.postgresql/postgresql.crt
 cp ${PGDATA}/server.key ~/.postgresql/postgresql.key
 
 # Attempt to log in successfully
-psql -h 127.0.0.1 -c "SELECT 'success'" postgres postgres
+psql -h 127.0.0.1 -c "SELECT 'success'" ${PGDATABASE} ${PGUSER}
