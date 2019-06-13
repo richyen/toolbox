@@ -4,12 +4,13 @@
 
 dir=${1:-.}
 do_it=${2:-0}
-outfile="~/Desktop/date_prefix_out.txt"
+outfile="/Users/richyen/Desktop/date_prefix_out.txt"
 counter=1
 for i in `ls ${dir}`
 do
-  C=`exiftool $i | grep "Creation Date" | awk '{ print $4 }' | sed -e "s/:/-/g"`
-  mv_cmd="mv $i ${C}_$counter.MOV"
+  C=`exiftool ${dir}/${i} | grep "Create Date" | head -n1 | awk '{ print $4 }' | sed -e "s/:/-/g"`
+  ext=`echo ${i} | cut -f2 -d'.'`
+  mv_cmd="mv ${dir}/${i} ${dir}/${C}_${counter}.${ext}"
   counter=$(( counter+1 ))
   if [[ $do_it -eq 1 ]]
   then
