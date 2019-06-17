@@ -1,10 +1,11 @@
 version: '3'
 services:
   centos:
-    image: centos:7
+    image: centos7/epas11:latest
     container_name: centos7
     hostname: centos7
     privileged: true
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup"
+      - "${HOME}:/docker"
     command: "/usr/sbin/init"
