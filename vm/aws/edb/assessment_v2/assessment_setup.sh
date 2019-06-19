@@ -10,18 +10,19 @@ echo "${SSH_PUB_KEY}"
 ### Environment
 export PGUSER=postgres
 export PGDATABASE=postgres
-export PGDATA="/var/lib/pgsql/10/data"
+export PGVERSION=11
+export PGDATA="/var/lib/pgsql/${PGVERSION}/data"
 export PGHOME="/var/lib/pgsql"
-export PGINSTALL="/usr/pgsql-10/bin"
+export PGINSTALL="/usr/pgsql-${PGVERSION}/bin"
 export PATH="${PGINSTALL}:${PATH}"
 
 ### Monitor command history
 echo "export HISTTIMEFORMAT=\"%Y-%m-%d %T \"" >> /etc/bashrc
 echo "PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t \"\$USER[\$\$] \$SSH_CONNECTION\")'" >> /etc/bashrc
 
-rpm -ivh https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-2.noarch.rpm
+rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 yum -q -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum -q -y install vim sudo git postgresql10-server pgbouncer
+yum -q -y install vim sudo git postgresql${PGVERSION}-server pgbouncer
 
 ### Prepare user
 mkdir ${PGHOME}/.ssh
