@@ -16,7 +16,21 @@ services:
         networks:
             public:
                 ipv4_address: 10.111.222.11
-
+    slony2:
+        image: centos7/epas10:latest
+        container_name: slony2
+        hostname: slony2
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - "/sys/fs/cgroup:/sys/fs/cgroup"
+          - "./:/docker"
+        command: "/usr/sbin/init"
+        networks:
+            public:
+                ipv4_address: 10.111.222.12
 networks:
     public:
         driver: "bridge"

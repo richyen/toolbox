@@ -1,12 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-export CLUSTERNAME=slony_example
-export MASTERDBNAME=pgbench
-export SLAVEDBNAME=pgbenchslave
-export MASTERHOST=127.0.0.1
-export SLAVEHOST=127.0.0.1
-export REPLICATIONUSER=enterprisedb
-export PGBENCHUSER=enterprisedb
+. /docker/environment
 
 slonik <<_EOF_
   #--

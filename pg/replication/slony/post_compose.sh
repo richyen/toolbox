@@ -1,8 +1,15 @@
 #!/bin/bash
 
-docker exec -it slony1 systemctl start edb-as-10
-docker exec -it slony1 /docker/0_slony_install.sh
-docker exec -it slony1 /docker/1_slony_setup.sh
-docker exec -it slony1 /docker/2_slonik_setup.sh
-docker exec -it slony1 /docker/3_slon_setup.sh
-docker exec -it slony1 /docker/4_subscribe.sh
+# Slony libs need to be installed on every server that is going to participate
+docker exec slony1 /docker/0_slony_install.sh
+docker exec slony2 /docker/0_slony_install.sh
+
+# Start up databases
+docker exec slony1 systemctl start edb-as-10
+docker exec slony2 systemctl start edb-as-10
+
+# Set up subscriptions
+docker exec slony1 /docker/1_slony_setup.sh
+docker exec slony1 /docker/2_slonik_setup.sh
+docker exec slony1 /docker/3_slon_startup.sh # This step may need to be run manually bc of TTY issues
+docker exec slony1 /docker/4_subscribe.sh

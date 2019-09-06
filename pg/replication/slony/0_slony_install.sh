@@ -9,7 +9,7 @@ yum -y install yum-plugin-ovl
 yum -y install epel-release perl-DBD-Pg
 
 ### To use EDB RPM
-yum -y --enablerepo=edbas10 --enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies install edb-as10-server-core edb-as10-slony-replication-core
+yum -y --enablerepo=edbas10 --enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies install edb-as10-server edb-as10-slony-replication
 
 ### To compile from source
 # SLON_VER=2.2
