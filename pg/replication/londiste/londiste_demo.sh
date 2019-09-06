@@ -4,6 +4,7 @@ set -e
 set -x
 
 ### Set up Databases
+systemctl start postgresql-9.6
 MASTER_DB='postgres'
 SLAVE_DB='londiste'
 psql -c "create table mytable (id serial primary key, first_name text, last_name text, birthdate timestamptz)" ${MASTER_DB} postgres
@@ -12,7 +13,7 @@ createdb -U postgres ${SLAVE_DB}
 pg_dump -s -U postgres ${MASTER_DB} | psql ${SLAVE_DB} postgres
 
 ### Install Londiste and dependencies
-yum -y install skytools-94 skytools-94-modules
+yum -y install skytools-96 skytools-96-modules
 
 ### Set up queueing/ticker system
 mkdir -pv ~postgres/londiste-config/{log,pid}
