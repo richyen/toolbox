@@ -1,7 +1,7 @@
-!$/bin/bash
+#!/bin/bash
 
 SLONY_LOG=''
-SLONY_SCHEMA=''
+SLONY_SCHEMA='slony_example'
 NUM_TABLES=`psql -Atc "SELECT count(*) FROM _${SLONY_SCHEMA}.sl_table" -U postgres`
 CURRENT_TABLE=`psql -Atc "select query from pg_stat_Activity where query like '%Table%Copy%'" -U postgres | sed -e "s:.*Copy(\(.*\)).*:\1:"`
 
