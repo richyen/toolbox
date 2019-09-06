@@ -1,0 +1,41 @@
+---
+version: '3'
+services:
+    bucardo1:
+        image: postgres-10:latest
+        container_name: bucardo1
+        hostname: bucardo1
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - "/sys/fs/cgroup:/sys/fs/cgroup"
+          - "./:/docker"
+        command: "/usr/sbin/init"
+        networks:
+            public:
+                ipv4_address: 10.111.220.11
+
+    bucardo2:
+        image: postgres-10:latest
+        container_name: bucardo2
+        hostname: bucardo2
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - "/sys/fs/cgroup:/sys/fs/cgroup"
+          - "./:/docker"
+        command: "/usr/sbin/init"
+        networks:
+            public:
+                ipv4_address: 10.111.220.12
+
+networks:
+    public:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.111.220.1/24
