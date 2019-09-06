@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# A script to watch slony build and notify when done (useful for large clusters)
+
 EMAIL_ADDRESS=''
 LOGFILE=''
 COUNTER=0
