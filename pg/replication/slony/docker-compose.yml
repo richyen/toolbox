@@ -1,0 +1,25 @@
+---
+version: '3'
+services:
+    slony1:
+        image: centos7/epas10:latest
+        container_name: slony1
+        hostname: slony1
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - "/sys/fs/cgroup:/sys/fs/cgroup"
+          - "./:/docker"
+        command: "/usr/sbin/init"
+        networks:
+            public:
+                ipv4_address: 10.111.222.11
+
+networks:
+    public:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.111.222.1/24
