@@ -1,0 +1,25 @@
+---
+version: '3'
+services:
+    londiste1:
+        image: postgres-9.6:latest
+        container_name: londiste1
+        hostname: londiste1
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - "/sys/fs/cgroup:/sys/fs/cgroup"
+          - "./:/docker"
+        command: "/usr/sbin/init"
+        networks:
+            public:
+                ipv4_address: 10.111.221.11
+
+networks:
+    public:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.111.221.1/24
