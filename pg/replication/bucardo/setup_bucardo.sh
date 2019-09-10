@@ -2,8 +2,8 @@
 
 set -e
 
-B1=10.111.220.11
-B2=10.111.220.12
+B1=bucardo1
+B2=bucardo2
 
 # Build and install bucardo
 yum -y install epel-release
