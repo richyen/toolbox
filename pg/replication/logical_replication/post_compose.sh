@@ -7,8 +7,8 @@ SVC="postgresql-10"
 #ver="edb"
 if [[ "${ver}" == "edb" ]]
 then
-PGDATA="/var/lib/edb/as10/data"
-SVC="edb-as-10"
+  PGDATA="/var/lib/edb/as10/data"
+  SVC="edb-as-10"
 fi
 
 PUB_NAME="testpub"
@@ -23,7 +23,7 @@ docker exec -it pg2 systemctl start ${SVC}
 
 # Create publication database
 docker exec -it pg1 psql -c "CREATE DATABASE ${DBNAME}"
- docker exec -it pg1 pgbench -i ${DBNAME}
+docker exec -it pg1 pgbench -i ${DBNAME}
 docker exec -it pg1 psql -c "CREATE PUBLICATION ${PUB_NAME} FOR ALL TABLES" ${DBNAME}
 
 # Create subscription database
