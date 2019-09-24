@@ -8,4 +8,5 @@ services:
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup"
       - "${HOME}:/docker"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
     command: "/usr/sbin/init"
