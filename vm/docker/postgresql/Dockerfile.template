@@ -1,5 +1,5 @@
-FROM gisjedi/gosu-centos
-# FROM centos:6.6
+#FROM gisjedi/gosu-centos
+FROM centos:6.6
 MAINTAINER richyen@yahoo.com
 
 ENV PGMAJOR=%%PGMAJOR%%
@@ -26,8 +26,8 @@ RUN echo 'root:root'|chpasswd
 RUN echo 'postgres   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 RUN echo 'postgres:postgres'|chpasswd
 
-RUN gosu postgres initdb -D ${PGDATA}
-# RUN service postgresql-${PGMAJOR} initdb
+#RUN gosu postgres initdb -D ${PGDATA}
+RUN service postgresql-${PGMAJOR} initdb
 
 RUN echo "export PGPORT=${PGPORT}"         >> /etc/profile.d/pg_env.sh
 RUN echo "export PGDATABASE=${PGDATABASE}" >> /etc/profile.d/pg_env.sh
@@ -48,5 +48,5 @@ RUN sed -i "s/^#max_wal_senders = 0/max_wal_senders = 5/" ${PGDATA}/postgresql.c
 
 EXPOSE ${PGPORT}
 
-CMD tail -F /var/log/yum.log
-# CMD service postgresql-${PGMAJOR} start && tail -F ${PGLOG}
+#CMD tail -F /var/log/yum.log
+CMD service postgresql-${PGMAJOR} start && tail -F ${PGLOG}
