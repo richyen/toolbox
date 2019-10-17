@@ -13,4 +13,4 @@ RUN scl enable rh-python36 bash && \
     pip install Flask
 
 EXPOSE 5000 80
-CMD "tail -f /dev/null"
+CMD tail -f /dev/null
