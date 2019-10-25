@@ -5,7 +5,7 @@ RUN yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x
 RUN yum -y install centos-release-scl epel-release postgresql12-devel vim
 RUN curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo
 RUN curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
-RUN yum -y install rh-python36 npm
+RUN yum -y install rh-python36 npm yarn
 RUN yum -y groupinstall "Development Tools"
 RUN scl enable rh-python36 bash && \
     mkdir my_flask_app && \
