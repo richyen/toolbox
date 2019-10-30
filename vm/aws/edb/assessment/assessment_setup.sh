@@ -57,7 +57,7 @@ mkdir ${PGDATA}/pg_log
 chown ${PGUSER}:${PGUSER} ${PGDATA}/pg_log
 
 ### Start EDBAS
-sudo -iu ${PGUSER} ${PGINSTALL}/pg_ctl -D ${PGDATA} -l ${PGDATA}/logfile start
+sudo -iu ${PGUSER} ${PGBIN}/pg_ctl -D ${PGDATA} -l ${PGDATA}/logfile start
 
 ### Prepare for assessment
 mkdir ${PGHOME}/.ssh
