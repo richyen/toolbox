@@ -21,7 +21,6 @@ PGBIN=/usr/edb/as${PGMAJOR}/bin
 PATH=${PGBIN}:${PATH}
 PGDATA=${PGHOME}/as${PGMAJOR}/data
 PGLOG=${PGHOME}/as${PGMAJOR}/pgstartup.log
-REPONAME=edbas${PGMAJOR}
 
 ### Monitor command history
 echo "export HISTTIMEFORMAT=\"%Y-%m-%d %T \"" >> /etc/bashrc
@@ -32,7 +31,7 @@ rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
 sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/edb.repo
 yum -y update
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum -y --enablerepo=${REPONAME} --enablerepo=enterprisedb-tools --enablerepo=enterprisedb-dependencies install edb-as${PGMAJOR}-server.x86_64 sudo wget edb-jdbc java-1.7.0-openjdk-devel
+yum -y install edb-as${PGMAJOR}-server.x86_64 sudo wget edb-jdbc java-1.7.0-openjdk-devel
 
 ### Prepare user
 mkdir ${PGHOME}/.ssh
