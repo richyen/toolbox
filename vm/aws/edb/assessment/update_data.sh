@@ -5,6 +5,7 @@ export PGUSER=enterprisedb
 export PGDATABASE=edb
 export PGHOST=127.0.0.1
 
+outfile="$( date +%s )_update_data.txt"
 D1=`date`
 
 # Give everyone a 10% raise
@@ -25,5 +26,5 @@ for id in `seq 1 ${MAXID}`
 done
 
 D2=`date`
-echo "Start time: ${D1}"
-echo "End time: ${D2}"
+echo "Start time: ${D1}" | tee -a $outfile
+echo "End time: ${D2}" | tee -a $outfile
