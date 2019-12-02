@@ -12,9 +12,9 @@ services:
       - ./certs:/container/service/slapd/assets/certs
     environment:
       - LDAP_TLS_VERIFY_CLIENT=try
-      - LDAP_TLS_CRT_FILENAME=ldap.crt
-      - LDAP_TLS_KEY_FILENAME=ldap.key
-      - LDAP_TLS_CA_CRT_FILENAME=ca.crt
+      - LDAP_TLS_CRT_FILENAME=ldap_server.pem
+      - LDAP_TLS_KEY_FILENAME=ldap_server.key
+      - LDAP_TLS_CA_CRT_FILENAME=ca_server.pem
     command: --copy-service
   console:
     image: osixia/phpldapadmin:0.7.2
