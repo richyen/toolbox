@@ -27,7 +27,7 @@ docker run --privileged=true --publish-all=true --interactive=false --tty=true -
 
 docker exec ${PGB_NAME} yum -y install pgbouncer
 docker cp pgbouncer.ini ${PGB_NAME}:/etc/pgbouncer/pgbouncer.ini
-docker exec ${PGB_NAME} bash -c "echo 'foouser:md519f71067fc0d06d9255e66dcedf01481' > /etc/pgbouncer/userlist.txt"
+docker exec ${PGB_NAME} bash -c "echo '\"foouser\" \"md519f71067fc0d06d9255e66dcedf01481\"' > /etc/pgbouncer/userlist.txt"
 docker exec ${PGB_NAME} /etc/init.d/pgbouncer start
 
 sleep 5
