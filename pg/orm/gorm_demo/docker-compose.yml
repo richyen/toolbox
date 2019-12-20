@@ -1,0 +1,26 @@
+version: "2"
+
+services:
+  app:
+    image: gorm_demo
+    build: .
+    volumes:
+      - .:/go/src/go-with-compose
+    working_dir: /go/src/go-with-compose
+    depends_on:
+      - db
+    tty: true
+    privileged: true
+    ports:
+      - "8080:8080"
+    command: go run gorm_demo.go
+  db:
+    image: postgres:latest
+    container_name: db
+    hostname: db
+    privileged: true
+    tty: true
+    environment:
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432"
