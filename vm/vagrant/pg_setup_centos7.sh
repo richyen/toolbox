@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Set environment variables
-export PGMAJOR=10
+export PGMAJOR=12
 export REPONAME=pgdg${PGMAJOR}
 export PGPORT=5432
 export PGDATABASE=postgres
@@ -15,7 +15,7 @@ yum -y update
 yum -y install yum-plugin-ovl
 yum -y install epel-release sudo vim
 
-### Install EDB Advanced Server
+### Install Postgres
 rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 yum -y install postgresql${PGMAJOR}-server
 
@@ -30,7 +30,6 @@ rm -rf ${PGDATA}
 sudo -u ${PGUSER} /usr/pgsql-${PGMAJOR}/bin/initdb -D ${PGDATA}
 
 ### Customize config files
-# sed -i "s/^PGPORT.*/PGPORT=${PGPORT}/" /etc/sysconfig/edb/as${PGMAJOR}/edb-as-${PGMAJOR}.sysconfig
 echo "export PGPORT=${PGPORT}"         >> /etc/profile.d/pg_env.sh
 echo "export PGDATABASE=${PGDATABASE}" >> /etc/profile.d/pg_env.sh
 echo "export PGUSER=${PGUSER}"         >> /etc/profile.d/pg_env.sh
