@@ -10,6 +10,7 @@ services:
     volumes:
       - /Users/richyen/Desktop/:/docker
       - ./certs:/container/service/slapd/assets/certs
+      - ./ldif/bootstrap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/50-bootstrap.ldif
     environment:
       - LDAP_TLS_VERIFY_CLIENT=try
       - LDAP_TLS_CRT_FILENAME=ldap_server.pem
