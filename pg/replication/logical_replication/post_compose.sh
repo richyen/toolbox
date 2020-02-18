@@ -1,14 +1,15 @@
 #!/bin/bash
 
-PGDATA="/var/lib/pgsql/10/data"
-SVC="postgresql-10"
+PGVERSION=11
+PGDATA="/var/lib/pgsql/${PGVERSION}/data"
+SVC="postgresql-${PGVERSION}"
 
 # (Un)comment to toggle between community and EDBAS
 #ver="edb"
 if [[ "${ver}" == "edb" ]]
 then
-  PGDATA="/var/lib/edb/as10/data"
-  SVC="edb-as-10"
+  PGDATA="/var/lib/edb/as${PGVERSION}/data"
+  SVC="edb-as-${PGVERSION}"
 fi
 
 PUB_NAME="testpub"
@@ -17,9 +18,9 @@ DBNAME="pglogical_test"
 
 # Start up PG
 docker exec -it pg1 sed -i "s/^#*wal_level.*/wal_level=logical/" ${PGDATA}/postgresql.conf
-docker exec -it pg1 systemctl start ${SVC}
+docker exec -it -u postgres pg1 pg_ctl start
 docker exec -it pg2 sed -i "s/^#*wal_level.*/wal_level=logical/" ${PGDATA}/postgresql.conf
-docker exec -it pg2 systemctl start ${SVC}
+docker exec -it -u postgres pg2 pg_ctl start
 
 # Create publication database
 docker exec -it pg1 psql -c "CREATE DATABASE ${DBNAME}"
