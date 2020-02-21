@@ -14,12 +14,15 @@ export PGVERSION=11
 yum -y install slony1-${PGVERSION}
 
 ### To compile from source
-# SLON_VER=2.2
+# VER_MAJ=2.2
+# VER_MIN=8
+# SLON_VER=slony1-${VER_MAJ}.${VER_MIN}
 # PG_BIN=/usr/pgsql-${PGVERSION}/bin
-# yum -y install wget tar bzip2 gcc
-# wget http://main.slony.info/downloads/${SLON_VER}/source/slony1-${SLON_VER}.4.tar.bz2
-# tar -xvjf slony1-${SLON_VER}.4.tar.bz2
-# cd slony1-${SLON_VER}.4
+# yum -y groupinstall "Development Tools"
+# yum -y install wget tar bzip2 gcc postgresql${PGVERSION//./}-devel
+# wget http://main.slony.info/downloads/${VER_MAJ}/source/${SLON_VER}.tar.bz2
+# tar -xvjf ${SLON_VER}.tar.bz2
+# cd ${SLON_VER}
 # ./configure --with-perltools --with-pgconfigdir=${PG_BIN}
-# gmake all
-# gmake install
+# make all
+# make install
