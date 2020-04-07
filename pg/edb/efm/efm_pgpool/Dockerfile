@@ -1,18 +1,20 @@
-FROM epas10:latest
+FROM centos6/epas10:latest
 # Get epas10:latest from https://github.com/richyen/ppas_and_docker/blob/master/epas/10/Dockerfile
 
 # Set environment vars
 ENV PGMAJOR=10
 ENV SERVICE_NAME=edb-as-${PGMAJOR}
-ENV EFM_VER=3.2
-ENV SYSCONFDIR=/etc/sysconfig/edb/pgpool3.6/
+ENV EFM_VER=3.9
+ENV PGPOOL_VER=3.6
+ENV SYSCONFDIR=/etc/sysconfig/edb/pgpool${PGPOOL_VER}/
 ENV PGDATA=/var/lib/edb/as10/data
 
 # Install packages
-RUN yum -y --enablerepo=enterprisedb-tools install which edb-efm32 java-1.8.0-openjdk vim edb-pgpool36 strace
+RUN yum -y install which edb-efm${EFM_VER/./} java-1.8.0-openjdk vim edb-pgpool${PGPOOL_VER/./} strace
 
 # Set up pgpool config files
 COPY pgpool.conf ${SYSCONFDIR}/pgpool.conf
+RUN sed -i "s/asver/as${PGMAJOR}/" ${SYSCONFDIR}/pgpool.conf
 RUN cp ${SYSCONFDIR}/pcp.conf.sample                        ${SYSCONFDIR}/pcp.conf
 RUN echo "enterprisedb:e99a18c428cb38d5f260853678922e03" >> ${SYSCONFDIR}/pcp.conf
 RUN cp ${SYSCONFDIR}/pool_hba.conf.sample                   ${SYSCONFDIR}/pool_hba.conf
@@ -51,3 +53,4 @@ COPY efm.properties /etc/edb/efm-${EFM_VER}/efm.properties
 COPY efm.nodes      /etc/edb/efm-${EFM_VER}/efm.nodes
 RUN chmod 777 /etc/edb/efm-${EFM_VER}/efm.properties
 RUN chmod 777 /etc/edb/efm-${EFM_VER}/efm.nodes
+RUN sed -i "s/asver/as${PGMAJOR}/" /etc/edb/efm-${EFM_VER}/efm.properties

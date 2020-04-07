@@ -3,7 +3,6 @@ FROM centos:6.6
 MAINTAINER richyen@yahoo.com
 
 ENV PGMAJOR=%%PGMAJOR%%
-ENV PGVERNUM=%%PGVERNUM%%
 ENV RPM_URL=%%RPM_URL%%
 
 ENV PGPORT=5432
@@ -18,7 +17,7 @@ RUN rpm -ivh ${RPM_URL}
 # run update and install require packages.
 RUN yum -y install yum-plugin-ovl
 RUN yum -y update
-RUN yum -y install postgresql${PGVERNUM}-server.x86_64
+RUN yum -y install postgresql${PGMAJOR/./}-server.x86_64
 
 RUN echo 'root:root'|chpasswd
 
