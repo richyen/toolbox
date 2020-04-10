@@ -5,7 +5,7 @@ FROM centos6/epas10:latest
 ENV PGMAJOR=10
 ENV SERVICE_NAME=edb-as-${PGMAJOR}
 ENV EFM_VER=3.9
-ENV PGPOOL_VER=3.6
+ENV PGPOOL_VER=3.7
 ENV SYSCONFDIR=/etc/sysconfig/edb/pgpool${PGPOOL_VER}/
 ENV PGDATA=/var/lib/edb/as10/data
 

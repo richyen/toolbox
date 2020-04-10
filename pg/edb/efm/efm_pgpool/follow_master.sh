@@ -2,7 +2,7 @@
 PCP_USER=enterprisedb      # PCP user name
 PCP_PORT=9898              # PCP port number as in pgpool.conf
 PCP_HOST=172.22.77.53       # hostname of Pgpool-II
-PGPOOL_PATH=/usr/edb/pgpool3.6/bin
+PGPOOL_PATH=/usr/edb/pgpool3.7/bin
 export PCPPASSFILE=/tmp/.pcppass_follow
 
 # Execute command by failover.
