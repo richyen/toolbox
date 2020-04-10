@@ -26,15 +26,6 @@ RUN echo "172.22.77.53:9898:enterprisedb:abc123" > /tmp/.pcppass_follow
 RUN chown enterprisedb:enterprisedb /tmp/.pcppass_follow
 RUN chmod 600 /tmp/.pcppass_follow
 
-# Copy scripts
-RUN mkdir -p /tmp/efm-scripts
-COPY follow_master.sh /tmp/efm-scripts
-COPY load_balancer_attach.sh /tmp/efm-scripts
-COPY load_balancer_detach.sh /tmp/efm-scripts
-COPY pgpool_backend.sh /tmp/efm-scripts
-COPY post_promotion.sh /tmp/efm-scripts
-RUN chown -R efm:efm /tmp/efm-scripts
-
 # Customizations for efm/pgpool
 RUN echo "wal_level = hot_standby"   >> ${PGDATA}/postgresql.conf
 RUN echo "max_wal_senders = 8"       >> ${PGDATA}/postgresql.conf
