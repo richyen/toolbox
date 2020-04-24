@@ -1,9 +1,8 @@
-#FROM gisjedi/gosu-centos
-FROM centos:6.6
-MAINTAINER richyen@yahoo.com
+FROM centos:6.10
+MAINTAINER richyen3@gmail.com
 
-ENV PGMAJOR=%%PGMAJOR%%
-ENV RPM_URL=%%RPM_URL%%
+ARG PGMAJOR
+ARG RPM_URL
 
 ENV PGPORT=5432
 ENV PGDATABASE=postgres
@@ -38,14 +37,13 @@ RUN echo "local  replication all                 trust" >> ${PGDATA}/pg_hba.conf
 RUN echo "host   replication repuser  0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 RUN echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 
-RUN sed -i "s/^#listen_addresses = 'localhost'/listen_addresses= '*'/" ${PGDATA}/postgresql.conf
-RUN sed -i "s/^port = .*/port = ${PGPORT}/"         ${PGDATA}/postgresql.conf
-RUN sed -i "s/^logging_collector = off/logging_collector = on/" ${PGDATA}/postgresql.conf
-RUN sed -i "s/^#wal_level.*/wal_level=hot_standby/" ${PGDATA}/postgresql.conf
-RUN sed -i "s/^#wal_keep_segments = 0/wal_keep_segments = 500/" ${PGDATA}/postgresql.conf
-RUN sed -i "s/^#max_wal_senders = 0/max_wal_senders = 5/" ${PGDATA}/postgresql.conf
+RUN sed -i -e "s/^#listen_addresses = .*/listen_addresses= '*'/" \
+           -e "s/^port = .*/port = ${PGPORT}/" \
+           -e "s/^logging_collector = off/logging_collector = on/" \
+           -e "s/^#wal_level.*/wal_level=hot_standby/" \
+           -e "s/^#wal_keep_segments = 0/wal_keep_segments = 500/" \
+           -e "s/^#max_wal_senders = 0/max_wal_senders = 5/" ${PGDATA}/postgresql.conf
 
 EXPOSE ${PGPORT}
 
-#CMD tail -F /var/log/yum.log
 CMD service postgresql-${PGMAJOR} start && tail -F ${PGLOG}
