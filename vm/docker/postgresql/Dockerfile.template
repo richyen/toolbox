@@ -37,12 +37,12 @@ RUN echo "local  replication all                 trust" >> ${PGDATA}/pg_hba.conf
 RUN echo "host   replication repuser  0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 RUN echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 
-RUN sed -i -e "s/^#listen_addresses = .*/listen_addresses= '*'/" \
-           -e "s/^port = .*/port = ${PGPORT}/" \
-           -e "s/^logging_collector = off/logging_collector = on/" \
-           -e "s/^#wal_level.*/wal_level=hot_standby/" \
-           -e "s/^#wal_keep_segments = 0/wal_keep_segments = 500/" \
-           -e "s/^#max_wal_senders = 0/max_wal_senders = 5/" ${PGDATA}/postgresql.conf
+RUN sed -e "s/^#listen_addresses = .*/listen_addresses= '*'/" \
+        -e "s/^port = .*/port = ${PGPORT}/" \
+        -e "s/^logging_collector = off/logging_collector = on/" \
+        -e "s/^#wal_level.*/wal_level=hot_standby/" \
+        -e "s/^#wal_keep_segments = 0/wal_keep_segments = 500/" \
+        -e "s/^#max_wal_senders = 0/max_wal_senders = 5/" -i ${PGDATA}/postgresql.conf
 
 EXPOSE ${PGPORT}
 
