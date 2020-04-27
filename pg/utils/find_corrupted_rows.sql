@@ -11,38 +11,37 @@
 BEGIN TRANSACTION;
 
 CREATE TABLE edb_corrupted_rows(schemaname TEXT,
-								tablename TEXT,
-								t_ctid TID,
-								sqlstate TEXT,
-								sqlerrm TEXT);
+                tablename TEXT,
+                t_ctid TID,
+                sqlstate TEXT,
+                sqlerrm TEXT);
 
 CREATE OR REPLACE FUNCTION check_table_row_corruption(schemaname TEXT, tablename TEXT) RETURNS VOID AS $$
 DECLARE
-    rec RECORD;
-    tmp RECORD;
-    t_ctid TID;
-    tmp_text TEXT;
+  rec RECORD;
+  tmp RECORD;
+  tmp_text TEXT;
 BEGIN
-    FOR rec IN EXECUTE 'SELECT ctid
-                        FROM ' || quote_ident(schemaname) || '.' || quote_ident(tablename)
-        LOOP
+  FOR rec IN EXECUTE format($q$
+    SELECT '(' || b || ','|| generate_series(0,292) || ')' AS generated_tid
+      FROM generate_series(0, pg_relation_size('%I.%I')/current_setting('block_size')::integer) b
+  $q$, schemaname, tablename)
+  LOOP
+  BEGIN
     BEGIN
-        t_ctid := rec.ctid;
-        BEGIN
-            EXECUTE 'SELECT * FROM '
-                    || quote_ident(schemaname) || '.' || quote_ident(tablename)
-                    || ' WHERE ctid = ''' || t_ctid || '''::tid'
-                INTO STRICT tmp;
+      EXECUTE 'SELECT * FROM '
+          || quote_ident(schemaname) || '.' || quote_ident(tablename)
+          || ' WHERE ctid = ''' || rec.generated_tid || '''::tid'
+        INTO tmp;
 
-            tmp_text := tmp::text;
-        EXCEPTION WHEN OTHERS THEN
-	    BEGIN
-          INSERT INTO edb_corrupted_rows VALUES(schemaname, tablename, t_ctid, SQLSTATE::text, SQLERRM::text);
-        COMMIT;
-	    END;
-        END;
+      tmp_text := tmp::text;
+    EXCEPTION WHEN OTHERS THEN
+    BEGIN
+      INSERT INTO edb_corrupted_rows VALUES(schemaname, tablename, rec.generated_tid::tid, SQLSTATE::text, SQLERRM::text);
     END;
-    END LOOP;
+    END;
+  END;
+  END LOOP;
 END;
 $$ LANGUAGE PLPGSQL;
 
