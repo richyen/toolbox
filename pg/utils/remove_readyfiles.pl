@@ -8,7 +8,7 @@ use strict;
 
 # Get PGDATA
 my $pgdata = shift;
-die "Usage: $0 </path/to/pgdata>" if !defined $pgdata;
+die "Usage: $0 /path/to/pgdata" if !defined $pgdata;
 
 # Get version
 open my $file, '<', "$pgdata/PG_VERSION";
@@ -24,16 +24,16 @@ my $archive_status = "$waldir/archive_status";
 # Read archive_status dir
 opendir(DIR,$archive_status);
 
-foreach(readdir(DIR)){
+while (my $f = readdir(DIR)) {
   # Only work with .ready files
-  next unless $_ =~ /(.*)\.ready/;
+  next unless $f =~ /^(0.*)\.ready$/;
   my $walfile = $1;
   if (-e "$waldir/$walfile") {
-    print STDOUT "File $walfile exists, skipping $_\n";
+    print STDOUT "File $walfile exists, skipping $f\n";
   } else {
     # Delete .ready file only if corresponding WAL file does not exist
-    print STDOUT "File $walfile does not exist, deleting $_\n";
-    unlink("$archive_status/$_") or warn "Can't unlink $_: $!";
+    print STDOUT "File $walfile does not exist, deleting $f\n";
+    unlink("$archive_status/$f") or warn "Can't unlink $f: $!";
   }
 }
 
