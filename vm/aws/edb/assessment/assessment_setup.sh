@@ -51,5 +51,5 @@ psql -c "SELECT pg_reload_conf()"
 
 chown -R pgbouncer:pgbouncer /etc/pgbouncer
 echo '"benchuser" "md5f141e18e8635983f5f719a405cf1a49d"' > /tmp/userlist.txt
-curl -s "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment_v2/edbstore.sql" > /tmp/edbstore.sql
+curl -s "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edbstore.sql" > /tmp/edbstore.sql
 ### update_data.sh located at https://gist.githubusercontent.com/richyen/3d4b1dca76a8216356e800456f36e410/raw/8a16e180abb2a5f9e7b52efd8e1dcbbcd6924222/update_data.sh
