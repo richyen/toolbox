@@ -2,75 +2,54 @@
 
 ### Provision a VM for assessment
 
-### TODO: Set these accordingly
-YUMUSERNAME=##########
-YUMPASSWORD=##########
-
 # Take in env variable, or use commandline arg
 : "${SSH_PUB_KEY:=$1}"
 : "${SSH_PUB_KEY:?Need to set SSH_PUB_KEY}"
 echo "${SSH_PUB_KEY}"
 
 ### Environment
-PGMAJOR=11
-PGPORT=5432
-PGDATABASE=edb
-PGUSER=enterprisedb
-PGHOME=/var/lib/edb
-PGBIN=/usr/edb/as${PGMAJOR}/bin
-PATH=${PGBIN}:${PATH}
-PGDATA=${PGHOME}/as${PGMAJOR}/data
-PGLOG=${PGHOME}/as${PGMAJOR}/pgstartup.log
+export PGUSER=postgres
+export PGDATABASE=postgres
+export PGVERSION=11
+export PGDATA="/var/lib/pgsql/${PGVERSION}/data"
+export PGHOME="/var/lib/pgsql"
+export PGINSTALL="/usr/pgsql-${PGVERSION}/bin"
+export PATH="${PGINSTALL}:${PATH}"
 
 ### Monitor command history
 echo "export HISTTIMEFORMAT=\"%Y-%m-%d %T \"" >> /etc/bashrc
 echo "PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t \"\$USER[\$\$] \$SSH_CONNECTION\")'" >> /etc/bashrc
 
-### Install EDBAS
-rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
-sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/edb.repo
-yum -y update
-yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum -y install edb-as${PGMAJOR}-server.x86_64 sudo wget edb-jdbc java-1.7.0-openjdk-devel
+rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+yum -q -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum -q -y install vim sudo git postgresql${PGVERSION}-server pgbouncer
 
 ### Prepare user
 mkdir ${PGHOME}/.ssh
 echo ${SSH_PUB_KEY} >> ${PGHOME}/.ssh/authorized_keys
 chmod 700 ${PGHOME}/.ssh
 chmod 600 ${PGHOME}/.ssh/authorized_keys
-chown -R ${PGUSER}:${PGUSER} ${PGHOME}
-restorecon -r -vv ${PGHOME}/.ssh    ### See https://ubuntuforums.org/showthread.php?t=1932058&s=00b938a71d52ba6c47b581befd8e71f6&p=12472161#post12472161
-echo "${PGUSER}    ALL=(ALL)   NOPASSWD: ALL" >> /etc/sudoers
+chown -R postgres:postgres ${PGHOME}
+restorecon -r -vv /var/lib/pgsql/.ssh    ### See https://ubuntuforums.org/showthread.php?t=1932058&s=00b938a71d52ba6c47b581befd8e71f6&p=12472161#post12472161
+echo 'postgres    ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 echo "export PATH=${PATH}" >> /etc/profile
 
 ### Initialize new database
-rm -rf ${PGDATA}
-sudo -u ${PGUSER} ${PGBIN}/initdb -D ${PGDATA}
-sed -i "s/^PGPORT.*/PGPORT=${PGPORT}/" /etc/sysconfig/edb/as${PGMAJOR}
-echo "export PGPORT=${PGPORT}"         >> /etc/profile.d/pg_env.sh
-echo "export PGDATABASE=${PGDATABASE}" >> /etc/profile.d/pg_env.sh
-echo "export PGUSER=${PGUSER}"         >> /etc/profile.d/pg_env.sh
-echo "export PATH=${PATH}"             >> /etc/profile.d/pg_env.sh
-echo "local  all         all                 peer"  >  ${PGDATA}/pg_hba.conf
-echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
-mkdir ${PGDATA}/pg_log
-chown ${PGUSER}:${PGUSER} ${PGDATA}/pg_log
+rm -rf ${PGDATA}/*
+sudo -iu postgres ${PGINSTALL}/initdb -D ${PGDATA} --auth-host=password
+sudo -iu postgres ${PGINSTALL}/pg_ctl -D ${PGDATA} -l ${PGDATA}/logfile start
+psql -c "ALTER SYSTEM SET log_statement TO 'all'"
+psql -c "ALTER SYSTEM SET log_min_duration_statement TO 0"
+psql -c "ALTER SYSTEM SET log_checkpoints TO on"
+psql -c "ALTER SYSTEM SET log_connections TO on"
+psql -c "ALTER SYSTEM SET log_disconnections TO on"
+psql -c "ALTER SYSTEM SET log_lock_waits TO on"
+psql -c "ALTER SYSTEM SET log_temp_files TO 0"
+psql -c "ALTER SYSTEM SET log_autovacuum_min_duration TO 0"
+psql -c "ALTER SYSTEM SET log_line_prefix TO '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h'"
+psql -c "SELECT pg_reload_conf()"
 
-### Start EDBAS
-sudo -iu ${PGUSER} ${PGBIN}/pg_ctl -D ${PGDATA} -l ${PGDATA}/logfile start
-
-### Prepare for assessment
-mkdir ${PGHOME}/.ssh
-echo ${SSH_PUB_KEY} >> ${PGHOME}/.ssh/authorized_keys
-chmod 700 ${PGHOME}/.ssh
-chmod 600 ${PGHOME}/.ssh/authorized_keys
-wget "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edb_sample.sql"
-psql -h 127.0.0.1 -p ${PGPORT} ${PGDATABASE} ${PGUSER} < edb_sample.sql
-rm -f edb_sample.sql
-wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/testJava.java"
-wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/top_performers.sql"
-wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/update_data.sh"
-cp /usr/edb/connectors/jdbc/edb-jdbc17.jar ${PGHOME}
-chown -R ${PGUSER}:${PGUSER} ${PGHOME}
-
-rm -f assessment_vm.sh
+chown -R pgbouncer:pgbouncer /etc/pgbouncer
+echo '"benchuser" "md5f141e18e8635983f5f719a405cf1a49d"' > /tmp/userlist.txt
+curl -s "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment_v2/edbstore.sql" > /tmp/edbstore.sql
+### update_data.sh located at https://gist.githubusercontent.com/richyen/3d4b1dca76a8216356e800456f36e410/raw/8a16e180abb2a5f9e7b52efd8e1dcbbcd6924222/update_data.sh
