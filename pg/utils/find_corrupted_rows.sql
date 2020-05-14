@@ -1,12 +1,8 @@
--- edb_corrupted_rows - returns corrupted rows from a table.
+-- find_corrupted_rows - returns corrupted rows from a table.
 -- Basically does the opposite of edb_noncorrupted_rows
 --
 -- It tries to fetch each tuple using ctid. If it cannot fetch the tuple,
 -- it adds the ctid to the edb_corrupted_rows table and continues.
---
--- Please note that, this function has the following assumptions:
--- 1. The block size is 8192 bytes.
--- 2. Maximum tuples per page is 291 (See definition of MaxHeapTuplesPerPage)
 
 BEGIN TRANSACTION;
 
@@ -22,6 +18,7 @@ DECLARE
   tmp RECORD;
   tmp_text TEXT;
 BEGIN
+  -- Assume maximum tuples per page is 292 (See definition of MaxHeapTuplesPerPage)
   FOR rec IN EXECUTE format($q$
     SELECT '(' || b || ','|| generate_series(0,292) || ')' AS generated_tid
       FROM generate_series(0, pg_relation_size('%I.%I')/current_setting('block_size')::integer) b
