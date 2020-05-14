@@ -26,7 +26,7 @@ begin
     $q$, _tbl)
     LOOP
     begin
-      EXECUTE 'SELECT * FROM ' || _tbl::regclass || ' where ctid::text = $1' into strict x USING ct;
+      EXECUTE 'SELECT * FROM ' || _tbl::regclass || ' where ctid = $1::tid' into strict x USING ct;
       return next x;
     exception
     when others then
