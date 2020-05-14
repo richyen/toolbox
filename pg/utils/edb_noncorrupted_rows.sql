@@ -27,8 +27,6 @@ begin
     LOOP
     begin
       EXECUTE 'SELECT * FROM ' || _tbl::regclass || ' where ctid::text = $1' into strict x USING ct;
-      -- TODO: need to figure out how to print table format back to screen;
-      raise notice '%', x;
       return next x;
     exception
     when others then
