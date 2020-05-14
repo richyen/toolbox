@@ -20,27 +20,36 @@
 create or replace function edb_noncorrupted_rows(_tbl regclass) returns setof record as $$
 declare
 	x record; --return parameter
-	i text;
-	rel_size int;
+	p text;
+  r text;
+  ct text;
+	rel_size bigint;
 	max_tuples_per_page int;
 	num_blocks int;
 	total_tuples int;
 begin
 
 EXECUTE format('select pg_relation_size(''%s'')', _tbl) into rel_size;
-num_blocks := (rel_size/8192);
+num_blocks := (rel_size/8192)::int;
 max_tuples_per_page := 291;
 total_tuples := num_blocks * max_tuples_per_page;
 
 -- loop through ctid lists ranging from (0, 1) to (num_blocks - 1, max_tuples_per_page)
-for i in select concat('(',concat(concat_ws(',',g / max_tuples_per_page, (g % max_tuples_per_page)+1),')'))::text from generate_series(0, total_tuples) g
-loop
-	begin
-		EXECUTE format('select * from %s where ctid = ''%s''::tid', _tbl, i) into strict x;
-		return next x;
-	exception
-	when others then
-		RAISE LOG 'Error Name:% ctid: %',SQLERRM, i;
-	end;
+for p in select generate_series(0, num_blocks - 1)
+  loop
+  for r in select generate_series(0, max_tuples_per_page)
+  loop
+	  begin
+      ct := format('(%s,%s)', p, r);
+		  EXECUTE 'SELECT * FROM ' || _tbl::regclass || ' where ctid::text = $1' into strict x USING ct;
+      -- TODO: need to figure out how to print table format back to screen;
+      raise notice '%', x;
+		  return next x;
+	  exception
+	  when others then
+		  RAISE LOG 'Error Name:% ctid: %',SQLERRM, ct;
+	  end;
+  end loop;
 end loop;
+return;
 end$$ language plpgsql;
