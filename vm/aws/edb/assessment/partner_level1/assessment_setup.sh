@@ -2,7 +2,7 @@
 
 ### Provision a VM for assessment
 
-NODOCKER=0
+NODOCKER=1
 if [[ ${NODOCKER} -eq 1 ]]; then
   # Take in env variable, or use commandline arg
   : "${SSH_PUB_KEY:=$1}"
