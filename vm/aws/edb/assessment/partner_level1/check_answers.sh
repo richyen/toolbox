@@ -1,7 +1,5 @@
 #!/bin/bash
 
-CONTAINER_NAME=l1
-OS_USER=postgres
 PGDATA=/var/lib/db
 PGPORT=5555
 REPPORT=7654
