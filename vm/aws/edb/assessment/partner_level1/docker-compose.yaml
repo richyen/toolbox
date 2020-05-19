@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  assessment:
+    image: assessment
+    build: ./
+    container_name: l1
+    privileged: true
+    stdin_open: true
+    tty: true
+    volumes:
+      - ${PWD}:/docker
+    ports:
+      - "5432:5432"
+    entrypoint:
+      - "/docker/assessment_setup.sh"
