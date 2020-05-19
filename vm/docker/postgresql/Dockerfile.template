@@ -24,7 +24,7 @@ RUN echo 'postgres   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 RUN echo 'postgres:postgres'|chpasswd
 
 # This toggles between CentOS 6 and CentOS 7
-#RUN gosu postgres initdb -D ${PGDATA}
+#RUN su - postgres -c "/usr/pgsql-${PGMAJOR}/bin/initdb -D ${PGDATA}"
 RUN service postgresql-${PGMAJOR} initdb
 
 # Export environment variables

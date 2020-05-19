@@ -6,7 +6,7 @@ then
   exit 1
 fi
 
-CENTOSVER=6
+CENTOSVER=7
 PGMAJOR=${1}
 RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${CENTOSVER}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
@@ -21,8 +21,8 @@ RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${CENTOSVER}-
 
 if [[ ${CENTOSVER} -eq 7 ]]
 then
-  sed -e "s/^FROM.*/FROM gisjedi\/gosu-centos/" \
-      -e "s/^#RUN gosu/RUN gosu/" \
+  sed -e "s/^FROM centos:.*/FROM centos:7/" \
+      -e "s/^#RUN su/RUN su/" \
       -e "s/^RUN service/#RUN service/" \
       -e "s/^CMD.*/CMD tail -F \/var\/log\/yum.log/" Dockerfile.template > Dockerfile
 else
