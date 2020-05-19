@@ -17,12 +17,6 @@ RUN rpm -ivh ${RPM_URL} \
  && yum -y update \
  && yum -y install postgresql${PGMAJOR/./}-server.x86_64
 
-RUN echo 'root:root'|chpasswd
-
-# setting postgres user for login
-RUN echo 'postgres   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
-RUN echo 'postgres:postgres'|chpasswd
-
 # This toggles between CentOS 6 and CentOS 7
 #RUN su - postgres -c "/usr/pgsql-${PGMAJOR}/bin/initdb -D ${PGDATA}"
 RUN service postgresql-${PGMAJOR} initdb
