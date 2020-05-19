@@ -11,12 +11,11 @@ ENV PGDATA=/var/lib/pgsql/${PGMAJOR}/data
 ENV PGLOG=/var/lib/pgsql/${PGMAJOR}/pgstartup.log
 ENV PATH=/usr/pgsql-${PGMAJOR}/bin:${PATH}
 
-RUN rpm -ivh ${RPM_URL}
-
-# run update and install require packages.
-RUN yum -y install yum-plugin-ovl
-RUN yum -y update
-RUN yum -y install postgresql${PGMAJOR/./}-server.x86_64
+# run update and install required packages.
+RUN rpm -ivh ${RPM_URL} \
+ && yum -y install yum-plugin-ovl \
+ && yum -y update \
+ && yum -y install postgresql${PGMAJOR/./}-server.x86_64
 
 RUN echo 'root:root'|chpasswd
 
@@ -24,25 +23,29 @@ RUN echo 'root:root'|chpasswd
 RUN echo 'postgres   ALL=(ALL)   NOPASSWD: ALL' >> /etc/sudoers
 RUN echo 'postgres:postgres'|chpasswd
 
+# This toggles between CentOS 6 and CentOS 7
 #RUN gosu postgres initdb -D ${PGDATA}
 RUN service postgresql-${PGMAJOR} initdb
 
-RUN echo "export PGPORT=${PGPORT}"         >> /etc/profile.d/pg_env.sh
-RUN echo "export PGDATABASE=${PGDATABASE}" >> /etc/profile.d/pg_env.sh
-RUN echo "export PGUSER=${PGUSER}"         >> /etc/profile.d/pg_env.sh
-RUN echo "export PATH=${PATH}"             >> /etc/profile.d/pg_env.sh
+# Export environment variables
+RUN echo "export PGPORT=${PGPORT}"         >> /etc/profile.d/pg_env.sh \
+ && echo "export PGDATABASE=${PGDATABASE}" >> /etc/profile.d/pg_env.sh \
+ && echo "export PGUSER=${PGUSER}"         >> /etc/profile.d/pg_env.sh \
+ && echo "export PATH=${PATH}"             >> /etc/profile.d/pg_env.sh
 
-RUN echo "local  all         all                 trust" >  ${PGDATA}/pg_hba.conf
-RUN echo "local  replication all                 trust" >> ${PGDATA}/pg_hba.conf
-RUN echo "host   replication repuser  0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
-RUN echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
+# Set pg_hba.conf as desired
+RUN echo "local  all         all                 trust" >  ${PGDATA}/pg_hba.conf \
+ && echo "local  replication all                 trust" >> ${PGDATA}/pg_hba.conf \
+ && echo "host   replication repuser  0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf \
+ && echo "host   all         all      0.0.0.0/0  trust" >> ${PGDATA}/pg_hba.conf
 
-RUN sed -e "s/^#listen_addresses = .*/listen_addresses= '*'/" \
-        -e "s/^port = .*/port = ${PGPORT}/" \
-        -e "s/^logging_collector = off/logging_collector = on/" \
-        -e "s/^#wal_level.*/wal_level=hot_standby/" \
-        -e "s/^#wal_keep_segments = 0/wal_keep_segments = 500/" \
-        -e "s/^#max_wal_senders = 0/max_wal_senders = 5/" -i ${PGDATA}/postgresql.conf
+# Set postgresql.conf as desired
+RUN sed -i -e "s/^#listen_addresses = .*/listen_addresses= '*'/" \
+           -e "s/^port = .*/port = ${PGPORT}/" \
+           -e "s/^logging_collector = off/logging_collector = on/" \
+           -e "s/^#wal_level.*/wal_level=hot_standby/" \
+           -e "s/^#wal_keep_segments = 0/wal_keep_segments = 500/" \
+           -e "s/^#max_wal_senders = 0/max_wal_senders = 5/" ${PGDATA}/postgresql.conf
 
 EXPOSE ${PGPORT}
 
