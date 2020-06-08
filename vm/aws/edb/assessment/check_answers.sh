@@ -37,7 +37,7 @@ DBNAME=edb
 # Verify update_data was edited correctly
 
 # Verify they created pgbench database
-[[ $( psql -p${PGPORT} -Atc 'select 1' pgbench -eq 1 ]] && echo "pgbench Database Access -- PASS"
+[[ $( psql -p${PGPORT} -Atc 'select 1' pgbench ) -eq 1 ]] && echo "pgbench Database Access -- PASS"
 
 # Verify they created benchuser user
 [[ $( psql -p${PGPORT} -Atc "SELECT rolpassword FROM pg_authid WHERE rolname = 'benchuser'" pgbench ) == 'md5f141e18e8635983f5f719a405cf1a49d' ]] && echo "User benchuser created -- PASS"
