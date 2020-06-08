@@ -6,7 +6,7 @@ PGUSER=postgres
 DBNAME=edb
 
 # Verify they created edbstore user
-[[ $( psql -p${PGPORT} -Atc "SELECT count(*) FROM pg_roles WHERE where rolname = 'edbstore'" postgres ) -ge 1 ]] && echo "edbstore user created -- PASS"
+[[ $( psql -p${PGPORT} -Atc "SELECT count(*) FROM pg_roles WHERE rolname = 'edbstore'" postgres ) -ge 1 ]] && echo "edbstore user created -- PASS"
 
 # Verify they created edb database
 [[ $( psql -p${PGPORT} -Atc 'select 1' ${DBNAME} ) -eq 1 ]] && echo "edb Database Access -- PASS"

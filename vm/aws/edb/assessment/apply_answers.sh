@@ -6,6 +6,7 @@ PGDATA="/var/lib/pgsql/${PGVERSION}/data"
 PGINSTALL="/usr/pgsql-${PGVERSION}/bin"
 PATH="${PGINSTALL}:${PATH}"
 DBNAME=edb
+export PGUSER=postgres
 
 # 1. Connect to postgres@<ip_address> with the ssh key that you provided earlier
 # 2. Create a user named edbstore with password "enterprisedb"
@@ -36,6 +37,7 @@ psql -p ${PGPORT} -c "CREATE TABLE sales (id INTEGER, salesperson INTEGER, custo
 curl -s "https://gist.githubusercontent.com/richyen/3d4b1dca76a8216356e800456f36e410/raw/8a16e180abb2a5f9e7b52efd8e1dcbbcd6924222/update_data.sh" > /tmp/update_data.sh
 
 # 11. Run /tmp/update_data.sh and save the timestamps to a file
+sed -i "s/export PGHOST.*//" /tmp/update_data.sh
 sh /tmp/update_data.sh
 
 # 12. Fix /tmp/update_data.sh so that it runs faster
@@ -72,6 +74,6 @@ pgbench -t 100000  -U benchuser -C -p 6432 -h 127.0.0.1 pgbench_alias
 git clone https://github.com/darold/pgbadger.git
 
 # 23. Run ./pgbadger -f stderr /var/lib/pgsql/<your_pg_version>/data/log/*
-${PWD}/pgbadger -f stderr ${PGDATA}/log/* > /tmp/pgbadger.html
+${PWD}/pgbadger/pgbadger -f stderr ${PGDATA}/log/* > /tmp/pgbadger.html
 
 # 24. Open the resulting HTML file in a browser and determine the number of sessions belonging to the "benchuser" user (look under the "Table" tab in "Sessions Per User").  Save this number to a file
