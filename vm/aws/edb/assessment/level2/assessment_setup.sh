@@ -27,7 +27,7 @@ echo "export HISTTIMEFORMAT=\"%Y-%m-%d %T \"" >> /etc/bashrc
 echo "PROMPT_COMMAND='history -a >(tee -a ~/.bash_history | logger -t \"\$USER[\$\$] \$SSH_CONNECTION\")'" >> /etc/bashrc
 
 ### Install EDBAS
-rpm -ivh http://yum.enterprisedb.com/edbrepos/edb-repo-latest.noarch.rpm
+rpm -ivh http://yum.enterprisedb.com/edb-repo-rpms/edb-repo-latest.noarch.rpm
 sed -i "s/<username>:<password>/${YUMUSERNAME}:${YUMPASSWORD}/" /etc/yum.repos.d/edb.repo
 yum -y update
 yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
