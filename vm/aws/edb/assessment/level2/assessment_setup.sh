@@ -70,7 +70,7 @@ rm -f edb_sample.sql
 wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/level2/testJava.java"
 wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/level2/top_performers.sql"
 wget -P ${PGHOME} "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/level2/update_data.sh"
-cp /usr/edb/connectors/jdbc/edb-jdbc17.jar ${PGHOME}
+cp /usr/edb/jdbc/edb-jdbc17.jar ${PGHOME}
 chown -R ${PGUSER}:${PGUSER} ${PGHOME}
 
 rm -f assessment_vm.sh
