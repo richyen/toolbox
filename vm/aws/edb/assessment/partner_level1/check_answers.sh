@@ -6,10 +6,10 @@ REPPORT=7654
 DBNAME=test_db
 
 # Verify they figured out how to fix $PGDATA permissions
-[[ $( ls -l /var/lib | grep -v dbus | grep db | awk '{ print $1 }' ) == 'drwx------' ]] && echo "PGDATA fix -- PASS"
+[[ $( ls -l /var/lib | grep -v dbus | grep db | awk '{ print $1 }' ) =~ 'drwx------' ]] && echo "PGDATA fix -- PASS"
 
 # Verify they figured out how to fix WAL dir permissions
-[[ $( ls -l /db | grep wal | awk '{ print $1 }' ) == 'drwx------' ]] && echo "WAL fix -- PASS"
+[[ $( ls -l /db | grep wal | awk '{ print $1 }' ) =~ 'drwx------' ]] && echo "WAL fix -- PASS"
 
 # Verify they figured out how to start up the database
 [[ $( psql -p${PGPORT} -Atc 'select 1' ) -eq 1 ]] && echo "DB Access -- PASS"
