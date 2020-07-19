@@ -1,14 +1,20 @@
 version: '3'
 services:
   pg1:
-    image: postgres-11:latest
+    image: centos7/postgres:latest
     container_name: pg1
     hostname: pg1
+    environment:
+      - PGMAJOR=12
     volumes:
-      - /Users/richyen/Desktop/:/docker
+      - ./:/docker
+    entrypoint: /docker/entrypoint.sh
   pg2:
-    image: postgres-11:latest
+    image: centos7/postgres:latest
     container_name: pg2
     hostname: pg2
+    environment:
+      - PGMAJOR=12
     volumes:
-      - /Users/richyen/Desktop/:/docker
+      - ./:/docker
+    entrypoint: /docker/entrypoint.sh
