@@ -7,9 +7,9 @@ cp /docker/certs/ca_server.pem /etc/openldap/ca_certs.pem
 
 SIMPLEBIND_MODE=1
 if [[ $SIMPLEBIND_MODE -eq 1 ]]; then
-  sed -i "s/host   all.*/host   all         all      0.0.0.0\/0  ldap ldapurl=\"ldap:\/\/ldap-service\/dc=example,dc=org?uid?sub\" ldaptls=1 ldapbinddn=\"cn=admin,dc=example,dc=org\" ldapbindpasswd=admin/" $PGDATA/pg_hba.conf
+  sed -i "s/host   all.*/host   all         all      0.0.0.0\/0  ldap ldapserver=ldap-service ldaptls=1 ldapprefix=\"cn=\" ldapsuffix=\", dc=example, dc=org\" ldapport=389/" $PGDATA/pg_hba.conf
 else
-  sed -i "s/host   all.*/host   all         all      0.0.0.0\/0  ldap ldapserver=ldap-service ldaptls=1 ldapport=389 ldapbasedn=\"dc=example,dc=org\" ldapbinddn=\"cn=admin,dc=example,dc=org\" ldapsearchattribute=uid ldapbindpasswd=admin/" $PGDATA/pg_hba.conf
+  sed -i "s/host   all.*/host   all         all      0.0.0.0\/0  ldap ldapurl=\"ldap:\/\/ldap-service\/dc=example,dc=org?uid?sub\" ldaptls=1 ldapbinddn=\"cn=admin,dc=example,dc=org\" ldapbindpasswd=admin/" $PGDATA/pg_hba.conf
 fi
 
 su - enterprisedb -c "pg_ctl start"
