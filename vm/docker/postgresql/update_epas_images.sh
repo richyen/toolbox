@@ -14,28 +14,38 @@ do
   V=${i/./}
   V6=${R}/centos6/epas${V}
   V7=${R}/centos7/epas${V}
+  V8=${R}/centos8/epas${V}
   EDBR="docker-reg.ma.us.enterprisedb.com:5000"
   EV6=${EDBR}/centos6/epas${V}
   EV7=${EDBR}/centos7/epas${V}
+  EV7=${EDBR}/centos8/epas${V}
   docker build --build-arg YUMUSERNAME=${YUMUSERNAME} --build-arg YUMPASSWORD=${YUMPASSWORD} --build-arg PGMAJOR=${i} -t ${V6}:latest -f Dockerfile.centos6 . &
-  docker build --build-arg YUMUSERNAME=${YUMUSERNAME} --build-arg YUMPASSWORD=${YUMPASSWORD} --build-arg PGMAJOR=${i} -t ${V7}:latest -f Dockerfile.centos7 .
+  docker build --build-arg YUMUSERNAME=${YUMUSERNAME} --build-arg YUMPASSWORD=${YUMPASSWORD} --build-arg PGMAJOR=${i} -t ${V7}:latest -f Dockerfile.centos7 . &
+  docker build --build-arg YUMUSERNAME=${YUMUSERNAME} --build-arg YUMPASSWORD=${YUMPASSWORD} --build-arg PGMAJOR=${i} -t ${V7}:latest -f Dockerfile.centos8 .
 
   # Set tags
   VN=`docker run -it --rm ${R}/centos7/epas${V}:latest psql --version | awk '{ print \$3 }' | tr -d '\r'`
   docker tag ${V6}:latest ${V6}:${VN}
   docker tag ${V7}:latest ${V7}:${VN}
+  docker tag ${V8}:latest ${V8}:${VN}
   docker tag ${V6}:latest ${EV6}:${VN}
   docker tag ${V7}:latest ${EV7}:${VN}
+  docker tag ${V8}:latest ${EV8}:${VN}
   docker tag ${V6}:latest ${EV6}:latest
   docker tag ${V7}:latest ${EV7}:latest
+  docker tag ${V8}:latest ${EV8}:latest
 
   # Push images to registry
   docker push ${V6}:latest
   docker push ${V6}:${VN}
   docker push ${V7}:latest
   docker push ${V7}:${VN}
+  docker push ${V8}:latest
+  docker push ${V8}:${VN}
   docker push ${EV6}:latest
   docker push ${EV6}:${VN}
   docker push ${EV7}:latest
   docker push ${EV7}:${VN}
+  docker push ${EV8}:latest
+  docker push ${EV8}:${VN}
 done
