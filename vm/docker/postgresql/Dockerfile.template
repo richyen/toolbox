@@ -19,7 +19,7 @@ RUN rpm -ivh ${RPM_URL} \
  && yum -y install postgresql${PGMAJOR/./}-server.x86_64
 
 # This toggles between CentOS 6 and CentOS 7
-#RUN su - postgres -c "/usr/pgsql-${PGMAJOR}/bin/initdb -D ${PGDATA}"
+#RUN su - postgres -c "/usr/pgsql-${PGMAJOR}/bin/initdb -D ${PGDATA} --no-locale -E UTF8"
 RUN service postgresql-${PGMAJOR} initdb
 
 # Export environment variables

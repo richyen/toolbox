@@ -6,7 +6,7 @@ then
   exit 1
 fi
 
-CENTOSVER=7
+CENTOSVER=8
 PGMAJOR=${1}
 RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${CENTOSVER}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
@@ -19,12 +19,15 @@ RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${CENTOSVER}-
 #       -e "s!PGLOG=/var/lib/pgsql/\${PGMAJOR}/pgstartup.log!PGLOG=/var/lib/pgsql/pgstartup.log!" -i Dockerfile
 # fi
 
-if [[ ${CENTOSVER} -eq 7 ]]
-then
-  sed -e "s/^FROM centos:.*/FROM centos:7/" \
+if [[ ${CENTOSVER} -gt 6 ]]; then
+  sed -e "s/^FROM centos:.*/FROM centos:${CENTOSVER}/" \
       -e "s/^#RUN su/RUN su/" \
       -e "s/^RUN service/#RUN service/" \
       -e "s/^CMD.*/CMD tail -F \/var\/log\/yum.log/" Dockerfile.template > Dockerfile
+  if [[ ${CENTOSVER} -eq 8 ]]; then
+    sed -i "" -e "s/yum /dnf /" \
+           -e "s/y install yum-plugin-ovl/qy module disable postgresql/" Dockerfile
+  fi
 else
   cp Dockerfile.template Dockerfile
 fi
