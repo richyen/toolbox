@@ -5,8 +5,8 @@ PGPORT=5555
 REPPORT=7654
 DBNAME=test_db
 
-NUM_TESTS=15
-SCORE=0
+MAX_C=15
+C=0
 
 # Verify they figured out how to fix $PGDATA permissions
 [[ $( ls -l /var/lib | grep -v dbus | grep db | awk '{ print $1 }' ) =~ 'drwx------' ]] && (( C++ )) && echo "PGDATA fix -- PASS"
@@ -51,4 +51,4 @@ SCORE=0
 # Verify table was moved to new tablespace
 [[ $( psql -p${PGPORT} -Atc "select t.spcname from pg_class c join pg_tablespace t on c.reltablespace=t.oid where relname = 'improvement_plan';" ${DBNAME} ) == 'expansion_tbspc' ]] && (( C++ )) && echo "Tablespace created -- PASS"
 
-echo "FINAL SCORE: ${C} out of ${NUM_TESTS}"
+echo "FINAL SCORE: ${C} out of ${MAX_C}"
