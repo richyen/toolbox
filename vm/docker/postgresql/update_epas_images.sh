@@ -7,7 +7,7 @@ then
   exit 1
 fi
 
-for i in 9.5 9.6 10 11 12
+for i in 9.5 9.6 10 11 12 13
 do
   # Build new images
   R=${1}
