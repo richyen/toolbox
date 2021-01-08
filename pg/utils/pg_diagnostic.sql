@@ -107,5 +107,8 @@ FROM (
 ) AS sml
 ORDER BY wastedbytes DESC;
 
+-- Get replication information
+SELECT * FROM pg_stat_replication;
+SELECT * FROM pg_replication_slots;
 -- Get all settings
 SHOW ALL;
