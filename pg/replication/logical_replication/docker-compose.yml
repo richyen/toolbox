@@ -2,7 +2,7 @@
 version: '3'
 services:
     pg1:
-        image: centos7/postgres-10:latest
+        image: centos7/postgres-13:latest
         container_name: pg1
         hostname: pg1
         privileged: true
@@ -17,7 +17,7 @@ services:
             public:
                 ipv4_address: 10.111.220.11
     pg2:
-        image: centos7/postgres-10:latest
+        image: centos7/postgres-13:latest
         container_name: pg2
         hostname: pg2
         privileged: true

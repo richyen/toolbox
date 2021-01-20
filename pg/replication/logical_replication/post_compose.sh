@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PGVERSION=11
+PGVERSION=13
 PGDATA="/var/lib/pgsql/${PGVERSION}/data"
 SVC="postgresql-${PGVERSION}"
 
