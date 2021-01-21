@@ -1,7 +1,9 @@
 export CLUSTERNAME=slony_example
-export MASTERDBNAME=pgbench
-export SLAVEDBNAME=pgbenchslave
-export MASTERHOST=slony1
-export SLAVEHOST=slony2
-export REPLICATIONUSER=enterprisedb
-export PGBENCHUSER=enterprisedb
+export NODE1DBNAME=pgbench
+export NODE2DBNAME=pgbenchclone
+export NODE3DBNAME=pgbenchclone
+export NODE1HOST=slony1
+export NODE2HOST=slony2
+export NODE3HOST=slony3
+export REPLICATIONUSER=postgres
+export PGBENCHUSER=postgres

@@ -3,10 +3,12 @@
 # Slony libs need to be installed on every server that is going to participate
 docker exec slony1 /docker/scripts/0_slony_install.sh
 docker exec slony2 /docker/scripts/0_slony_install.sh
+docker exec slony3 /docker/scripts/0_slony_install.sh
 
 # Start up databases
-docker exec slony1 systemctl start edb-as-10
-docker exec slony2 systemctl start edb-as-10
+docker exec slony1 systemctl start postgresql-11
+docker exec slony2 systemctl start postgresql-11
+docker exec slony3 systemctl start postgresql-11
 
 # Set up subscriptions
 docker exec slony1 /docker/scripts/1_db_setup.sh

@@ -11,6 +11,7 @@
 
 ### To use PGDG RPM
 export PGVERSION=11
+yum -y install perl
 yum -y install slony1-${PGVERSION}
 
 ### To compile from source

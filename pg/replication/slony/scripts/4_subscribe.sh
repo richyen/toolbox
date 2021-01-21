@@ -14,11 +14,13 @@ slonik <<_EOF_
    # that connect from the administrators workstation (where
    # slonik is executed).
    # ----
-   node 1 admin conninfo = 'dbname=$MASTERDBNAME host=$MASTERHOST user=$REPLICATIONUSER';
-   node 2 admin conninfo = 'dbname=$SLAVEDBNAME host=$SLAVEHOST user=$REPLICATIONUSER';
+   node 1 admin conninfo = 'dbname=$NODE1DBNAME host=$NODE1HOST user=$REPLICATIONUSER';
+   node 2 admin conninfo = 'dbname=$NODE2DBNAME host=$NODE2HOST user=$REPLICATIONUSER';
+   node 3 admin conninfo = 'dbname=$NODE3DBNAME host=$NODE3HOST user=$REPLICATIONUSER';
 
    # ----
-   # Node 2 subscribes set 1
+   # Node 2,3 subscribe set 1
    # ----
    subscribe set ( id = 1, provider = 1, receiver = 2, forward = no);
+   subscribe set ( id = 1, provider = 1, receiver = 3, forward = no);
 _EOF_

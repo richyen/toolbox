@@ -14,8 +14,9 @@ slonik <<_EOF_
   # node on each side of the cluster, the syntax is that of PQconnectdb in
   # the C-API
   # --
-  node 1 admin conninfo = 'dbname=$MASTERDBNAME host=$MASTERHOST user=$REPLICATIONUSER';
-  node 2 admin conninfo = 'dbname=$SLAVEDBNAME host=$SLAVEHOST user=$REPLICATIONUSER';
+  node 1 admin conninfo = 'dbname=$NODE1DBNAME host=$NODE1HOST user=$REPLICATIONUSER';
+  node 2 admin conninfo = 'dbname=$NODE2DBNAME host=$NODE2HOST user=$REPLICATIONUSER';
+  node 3 admin conninfo = 'dbname=$NODE3DBNAME host=$NODE3HOST user=$REPLICATIONUSER';
 
   #--
   # init the first node.  This creates the schema
@@ -37,11 +38,16 @@ slonik <<_EOF_
   set add table (set id=1, origin=1, id=4, fully qualified name = 'public.pgbench_history', comment='history table');
 
   #--
-  # Create the second node (the slave) tell the 2 nodes how to connect to
+  # Create the second and third nodes, tell the 3 nodes how to connect to
   # each other and how they should listen for events.
   #--
 
-  store node (id=2, comment = 'Slave node', event node=1);
-  store path (server = 1, client = 2, conninfo='dbname=$MASTERDBNAME host=$MASTERHOST user=$REPLICATIONUSER');
-  store path (server = 2, client = 1, conninfo='dbname=$SLAVEDBNAME host=$SLAVEHOST user=$REPLICATIONUSER');
+  store node (id=2, comment = 'Standby node1', event node=1);
+  store node (id=3, comment = 'Standby node2', event node=1);
+  store path (server = 1, client = 2, conninfo='dbname=$NODE1DBNAME host=$NODE1HOST user=$REPLICATIONUSER');
+  store path (server = 1, client = 3, conninfo='dbname=$NODE1DBNAME host=$NODE1HOST user=$REPLICATIONUSER');
+  store path (server = 2, client = 1, conninfo='dbname=$NODE2DBNAME host=$NODE2HOST user=$REPLICATIONUSER');
+  store path (server = 2, client = 3, conninfo='dbname=$NODE2DBNAME host=$NODE2HOST user=$REPLICATIONUSER');
+  store path (server = 3, client = 2, conninfo='dbname=$NODE3DBNAME host=$NODE3HOST user=$REPLICATIONUSER');
+  store path (server = 3, client = 1, conninfo='dbname=$NODE3DBNAME host=$NODE3HOST user=$REPLICATIONUSER');
 _EOF_
