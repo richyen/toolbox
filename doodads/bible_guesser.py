@@ -6,6 +6,7 @@ from os import path
 import re
 import random
 import requests
+import sys
 
 
 API_KEY = os.environ.get('ESV_API')
@@ -82,7 +83,9 @@ CHAPTER_LENGTHS = {
 
 
 def get_passage(book):
-    book = random.choice(list(CHAPTER_LENGTHS.keys()))
+    if book is None:
+      book = random.choice(list(CHAPTER_LENGTHS.keys()))
+
     # print("Selected book %s" % book)
     chapter = 1
     num_chapters = len(CHAPTER_LENGTHS[book])
@@ -143,8 +146,12 @@ if __name__ == '__main__':
 
     record = get_record()
 
+    book = None
+    if len(sys.argv) > 1:
+      book = sys.argv[1]
+
     while True:
-      passage = get_passage()
+      passage = get_passage(book)
       print(get_esv_text(passage))
       val = input("Which chapter of %s is this from? " % (passage['book']))
       if val == "q":
