@@ -1,2 +1,3 @@
 *.class
 instantclient*
+.bg_record

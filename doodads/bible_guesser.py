@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 # Adapted from https://api.esv.org/docs/samples/
-import os
+import os.path
+from os import path
 import re
 import random
 import requests
@@ -80,18 +81,23 @@ CHAPTER_LENGTHS = {
     }
 
 
-
-def get_passage():
+def get_passage(book):
     book = random.choice(list(CHAPTER_LENGTHS.keys()))
-    chapter = random.randrange(1, len(CHAPTER_LENGTHS[book]))
-    verse = random.randint(1, CHAPTER_LENGTHS[book][chapter])
+    # print("Selected book %s" % book)
+    chapter = 1
+    num_chapters = len(CHAPTER_LENGTHS[book])
+    if num_chapters > 1:
+      chapter = random.randrange(1, num_chapters)
+    verse = random.randint(1, CHAPTER_LENGTHS[book][chapter-1])
 
-    return '%s %s:%s' % (book, chapter, verse)
+    return { 'book': book, 'chapter': chapter, 'verse': verse }
 
 
 def get_esv_text(passage):
+    reference = '%s %s:%s' % (passage['book'], passage['chapter'], passage['verse'])
+
     params = {
-        'q': passage,
+        'q': reference,
         'indent-poetry': False,
         'include-headings': False,
         'include-footnotes': False,
@@ -111,11 +117,46 @@ def get_esv_text(passage):
     return '%s – %s' % (text, data['canonical'])
 
 
-def render_esv_text(data):
-    text = re.sub('\s+', ' ', data['passages'][0]).strip()
+def get_record():
+    record = 0
+    record_file = ".bg_record"
+    if path.exists(record_file):
+      f = open(record_file, "r")
+      record = f.readline()
+      f.close()
 
-    return '%s – %s' % (text, data['canonical'])
+    if record is None:
+      return 0
 
+    return int(record)
+
+
+def save_new_record(record):
+    record_file = ".bg_record"
+    f = open(record_file, "w")
+    f.write(str(record))
+    f.close()
+    print("New record saved: %s" % record)
 
 if __name__ == '__main__':
-    print(get_esv_text(get_passage()))
+    streak = 0
+
+    record = get_record()
+
+    while True:
+      passage = get_passage()
+      print(get_esv_text(passage))
+      val = input("Which chapter of %s is this from? " % (passage['book']))
+      if val == "q":
+        print("Goodbye!")
+        if streak > record:
+          save_new_record(streak)
+        quit()
+      if int(val) is passage['chapter']:
+        streak += 1
+        print("Correct! Your streak is now %s" % streak)
+      else:
+        print("%s is incorrect -- this is %s chapter %s" % (val,passage['book'],passage['chapter']))
+        if streak > record:
+          save_new_record(streak)
+        streak = 0
