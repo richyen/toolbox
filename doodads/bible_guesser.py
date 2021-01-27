@@ -117,7 +117,8 @@ def get_esv_text(passage):
 
     text = re.sub('\s+', ' ', data['passages'][0]).strip()
 
-    return '%s – %s' % (text, data['canonical'])
+    # print '%s – %s' % (text, data['canonical'])
+    return '%s' % (text)
 
 
 def get_record():
