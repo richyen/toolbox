@@ -140,7 +140,10 @@ def save_new_record(record):
     f = open(record_file, "w")
     f.write(str(record))
     f.close()
-    print("New record saved: %s" % record)
+    if record == 0:
+      print("Record cleared")
+    else:
+      print("New record saved: %s" % record)
 
 if __name__ == '__main__':
     streak = 0
@@ -150,6 +153,10 @@ if __name__ == '__main__':
     book = None
     if len(sys.argv) > 1:
       book = sys.argv[1]
+
+    if book == "clear":
+      save_new_record(0)
+      quit()
 
     while True:
       passage = get_passage(book)
