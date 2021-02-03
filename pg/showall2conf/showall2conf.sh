@@ -6,6 +6,13 @@
 # an identical environment
 
 FILE=${1}
+if [[ "${FILE}x" == "x" ]]; then
+  echo "Need to provide filename"
+  exit 1
+fi
+
+IGNORE_EDB=${2}
+
 DL='|'
 
 SORTED=`cat ${FILE} | grep "${DL}" | cut -f 1-2 -d "${DL}" | awk '{ printf("%s = %s\n", $1, $3) }' | grep -v "name = setting"`; # > /tmp/sa2c.1.txt
@@ -21,5 +28,10 @@ for ignore in ${IGNORE_SETTINGS}; do SORTED=`echo "${SORTED}" | grep -v "^${igno
 QUOTE_SETTINGS="application_name archive_command archive_mode backslash_quote bonjour_name bytea_output client_encoding client_min_messages cluster_name constraint_exclusion custom_variable_classes DateStyle db_dialect default_tablespace default_text_search_config default_transaction_isolation dynamic_library_path dynamic_shared_memory_type edb_audit edb_audit_connect edb_audit_directory edb_audit_disconnect edb_audit_filename edb_audit_rotation_day edb_audit_statement edb_audit_tag edb_dynatune_profile edb_icache_servers edb_resource_group event_source external_pid_file huge_pages IntervalStyle krb_server_keyfile lc_messages lc_monetary lc_numeric lc_time listen_addresses local_preload_libraries log_destination log_directory log_error_verbosity log_filename log_line_prefix log_min_error_statement log_min_messages log_statement log_timezone odbc_lib_path optimizer_mode oracle_home qreplace_function search_path session_preload_libraries session_replication_role shared_preload_libraries ssl_ca_file ssl_cert_file ssl_ciphers ssl_crl_file ssl_ecdh_curve ssl_key_file stats_temp_directory synchronous_commit synchronous_standby_names syslog_facility syslog_ident temp_tablespaces TimeZone timezone_abbreviations trace_recovery_messages track_functions unix_socket_directories unix_socket_group wal_level wal_sync_method xmlbinary xmloption"
 
 for quote in ${QUOTE_SETTINGS}; do SORTED=`echo "${SORTED}" | sed -E "s/${quote} = (.*)/${quote} = '\1'/"`; done
+
+EDB_SETTINGS="db_dialect default_heap_fillfactor default_with_rowids enable_hints odbc_lib_path optimizer_mode oracle_home qreplace_function timed_statistics trace_hints edb redwood"
+if [[ "${IGNORE_EDB}" == "1" ]]; then
+  for edb_setting in ${EDB_SETTINGS}; do SORTED=`echo "${SORTED}" | grep -v "${edb_setting}"`; done
+fi
 
 echo "${SORTED}"
