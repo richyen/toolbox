@@ -1,3 +1,4 @@
 *.class
 instantclient*
 .bg_record
+*.vdi
