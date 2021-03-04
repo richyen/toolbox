@@ -1,4 +1,4 @@
-FROM centos:6.10
+FROM centos:7
 MAINTAINER richyen3@gmail.com
 
 ARG PGMAJOR
@@ -18,9 +18,7 @@ RUN rpm -ivh ${RPM_URL} \
  && yum -y update \
  && yum -y install postgresql${PGMAJOR/./}-server.x86_64
 
-# This toggles between CentOS 6 and CentOS 7
-#RUN su - postgres -c "/usr/pgsql-${PGMAJOR}/bin/initdb -D ${PGDATA} --no-locale -E UTF8"
-RUN service postgresql-${PGMAJOR} initdb
+RUN su - postgres -c "/usr/pgsql-${PGMAJOR}/bin/initdb -D ${PGDATA} --no-locale -E UTF8"
 
 # Export environment variables
 RUN echo "export PGPORT=${PGPORT}"         >> /etc/profile.d/pg_env.sh \
@@ -44,4 +42,4 @@ RUN sed -i -e "s/^#listen_addresses = .*/listen_addresses= '*'/" \
 
 EXPOSE ${PGPORT}
 
-CMD service postgresql-${PGMAJOR} start && tail -F ${PGLOG}
+CMD tail -F ${PGLOG}
