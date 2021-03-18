@@ -16,6 +16,7 @@ RUN yum -y upgrade && \
                    perl-devel bison bison-runtime tar  gcc-c++ flex \
                    flex-devel libcurl-devel yum-utils libicu-devel
 RUN useradd postgres
+# COPY ${PATH_TO_SRC} /postgres
 RUN git clone https://github.com/postgres/postgres.git
 
 FROM pgbase
