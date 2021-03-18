@@ -39,4 +39,4 @@ RUN su - postgres -c "${PG_HOME}/bin/initdb -D ${PGDATA}"
 
 EXPOSE 5432
 
-CMD su - postgres -c "${PG_HOME}/bin/pg_ctl -D ${PGDATA}" && tail -f /dev/null
+CMD su - postgres -c "${PG_HOME}/bin/pg_ctl -D ${PGDATA} start" && tail -f /dev/null
