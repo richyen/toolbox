@@ -1,7 +1,5 @@
 FROM centos:7 AS pgbase
 
-ARG COMMIT_NUM
-
 ENV PG_HOME="/usr/pgsql"
 ENV PGDATA="/var/lib/pgsql/data"
 
@@ -21,6 +19,8 @@ RUN useradd postgres
 RUN git clone https://github.com/postgres/postgres.git
 
 FROM pgbase
+
+ARG COMMIT_NUM
 WORKDIR /postgres
 
 RUN git checkout ${COMMIT_NUM}
