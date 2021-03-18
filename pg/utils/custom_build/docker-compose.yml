@@ -1,0 +1,13 @@
+version: '3'
+services:
+  pgcustom:
+    image: pgcustom:latest
+    container_name: pgcustom
+    hostname: pgcustom
+    build:
+      context: .
+      args:
+        COMMIT_NUM: ""
+    privileged: true
+    volumes:
+      - "${HOME}:/docker"
