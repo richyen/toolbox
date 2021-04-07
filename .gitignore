@@ -2,3 +2,5 @@
 instantclient*
 .bg_record
 *.vdi
+ldap_server.key
+ldap_server.pem
