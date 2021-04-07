@@ -64,3 +64,19 @@ sn: testuser
 uid: testuser
 uidnumber: 1002
 userpassword: {MD5}F2qqUZCN8xURoxh9nBApaw==
+
+# Entry 5: cn=postgres,dc=example,dc=org
+dn: cn=postgres,dc=example,dc=org
+changetype: add
+cn: postgres
+gidnumber: 500
+givenname: postgres
+homedirectory: /home/postgres
+loginshell: /bin/sh
+objectclass: inetOrgPerson
+objectclass: posixAccount
+objectclass: top
+sn: postgres
+uid: postgres
+uidnumber: 1003
+userpassword: {MD5}6ZoYxCjLONXyYIU2eJIuAw==

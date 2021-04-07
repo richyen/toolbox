@@ -28,7 +28,7 @@ services:
     ports:
       - "6443:443"
   database:
-    image: postgres-11:latest
+    image: centos7/postgres:10.10
     links:
       - ldap-service
     container_name: pg
