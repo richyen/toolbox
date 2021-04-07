@@ -5,7 +5,7 @@ yum install -y -q https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x8
 
 # Use [LDAP Cert setup guide](https://www.digitalocean.com/community/tutorials/how-to-encrypt-openldap-connections-using-starttls) as reference if necessary
 yum -y install openldap-clients
-CA_CERT_FILE=/docker/certs/ca_server.pem
+CA_CERT_FILE=/docker/certs/ldap_server.pem
 echo "TLS_CACERT ${CA_CERT_FILE}" >> /etc/openldap/ldap.conf
 
 SIMPLEBIND_MODE=1
