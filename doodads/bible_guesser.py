@@ -90,7 +90,7 @@ def get_passage(book):
     chapter = 1
     num_chapters = len(CHAPTER_LENGTHS[book])
     if num_chapters > 1:
-      chapter = random.randrange(1, num_chapters)
+      chapter = random.randrange(1, num_chapters+1)
     verse = random.randint(1, CHAPTER_LENGTHS[book][chapter-1])
 
     return { 'book': book, 'chapter': chapter, 'verse': verse }
