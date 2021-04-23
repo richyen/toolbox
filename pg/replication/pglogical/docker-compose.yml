@@ -1,0 +1,37 @@
+---
+version: '3'
+services:
+   provider:
+        image: centos7/postgres:12.3
+        container_name: provider
+        hostname: provider
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - ".:/docker"
+        entrypoint: "/docker/entrypoint.sh"
+        networks:
+            public:
+                ipv4_address: 10.111.211.11
+   subscriber:
+        image: centos7/postgres:12.3
+        container_name: subscriber
+        hostname: subscriber
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - ".:/docker"
+        entrypoint: "/docker/entrypoint.sh"
+        networks:
+            public:
+                ipv4_address: 10.111.211.12
+networks:
+    public:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.111.211.1/24
