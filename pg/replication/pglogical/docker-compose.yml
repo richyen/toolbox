@@ -12,6 +12,8 @@ services:
         volumes:
           - ".:/docker"
         entrypoint: "/docker/entrypoint.sh"
+        depends_on:
+          - subscriber
         networks:
             public:
                 ipv4_address: 10.111.211.11
