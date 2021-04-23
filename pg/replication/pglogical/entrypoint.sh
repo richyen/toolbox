@@ -10,7 +10,7 @@ PGUSER=postgres
 
 # Make sure environment is clean
 curl -s https://access.2ndquadrant.com/api/repository/dl/default/release/${PGMAJOR}/rpm | bash
-yum -y -q install postgresql${PGMAJOR}-pglogical postgresql12-contrib
+yum -y -q install postgresql${PGMAJOR}-pglogical postgresql${PGMAJOR}-contrib
 
 # Start and configure postgres
 cat << EOF >> /var/lib/pgsql/${PGMAJOR}/data/postgresql.conf
