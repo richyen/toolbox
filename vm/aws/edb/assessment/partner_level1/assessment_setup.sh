@@ -2,6 +2,11 @@
 
 ### Provision a VM for assessment
 
+if [[ $(( whoami )) != 'root' ]]; then
+  echo "Please run this script as root user"
+  exit 1
+fi
+
 ### Environment
 export PGUSER=postgres
 export PGDATABASE=postgres
