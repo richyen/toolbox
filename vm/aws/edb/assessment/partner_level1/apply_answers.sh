@@ -60,6 +60,7 @@ psql -p ${PGPORT} -c "SELECT 'I vacuumed and analyzed' INTO public.improvement_p
 
 # 9. The following query used to use an index scan, but not anymore: select * from myshop.orders where orderid = 100.  Please fix it so that an index scan is used.
 psql -p ${PGPORT} -c "ALTER SYSTEM SET random_page_cost to DEFAULT"
+pg_ctl -l /tmp/logfile -D ${PGDATA} restart
 
 # 10. To anticipate future space requirements, please create a tablespace named "expansion_tbspc" and store it at /mnt/expansion. Move public.improvement_plan to this new tablespace
 psql -p ${PGPORT} -c "CREATE TABLESPACE expansion_tbspc LOCATION '/mnt/expansion';"
