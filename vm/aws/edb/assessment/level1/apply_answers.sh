@@ -53,24 +53,29 @@ psql -p ${PGPORT} -c "CREATE DATABASE pgbench"
 psql -p ${PGPORT} -c "CREATE USER benchuser WITH PASSWORD 'bench123'"
 
 # 16. Create an alias in /etc/pgbouncer/pgbouncer.ini named "bench_alias" which will connect to host 127.0.0.1, port 5432, database pgbench using user benchuser and password bench123 (HINT, you may want to use the forcedb alias as a template)
-## TODO: Add command
+sed -i "s/;forcedb.*/bench_alias = host=127.0.0.1 port=5432 dbname=pgbench user=benchuser password=bench123/" /etc/pgbouncer/pgbouncer.ini
 
 # 17. In /etc/pgbouncer/pgbouncer.ini, set listen_addresses to *, auth_type to md5, pool_mode to transaction
-## TODO: Add command
+sed -i "s/listen_addr =.*/listen_addr = */" /etc/pgbouncer/pgbouncer.ini
+sed -i "s/auth_type =.*/auth_type = md5/" /etc/pgbouncer/pgbouncer.ini
+sed -i "s/pool_mode =.*/pool_mode = transaction/" /etc/pgbouncer/pgbouncer.ini
 
 # 18. Copy /tmp/userlist.txt to /etc/pgbouncer/userlist.txt
 cp /tmp/userlist.txt /etc/pgbouncer/userlist.txt
 
 # 19. Start up pgbouncer by becoming the pgbouncer user and issuing "pgbouncer -d /etc/pgbouncer/pgbouncer.ini"
-systemctl start pgbouncer
+#systemctl start pgbouncer
+su - pgbouncer -c "pgbouncer -d /etc/pgbouncer/pgbouncer.ini"
 
-# 20. Run the following command: pgbench -i -U benchuser -p 6432 -h 127.0.0.1 pgbench_alias
-pgbench -i -U benchuser -p 6432 -h 127.0.0.1 pgbench_alias
+# 20. Run the following command: pgbench -i -U benchuser -p 6432 -h 127.0.0.1 bench_alias
+PGPASSWORD=bench123 pgbench -i -U benchuser -p 6432 -h 127.0.0.1 bench_alias
 
-# 21. Run the following command: pgbench -t 100000  -U benchuser -C -p 6432 -h 127.0.0.1 pgbench_alias
-pgbench -t 100000  -U benchuser -C -p 6432 -h 127.0.0.1 pgbench_alias
+# 21. Run the following command: pgbench -t 100000  -U benchuser -C -p 6432 -h 127.0.0.1 bench_alias
+PGPASSWORD=bench123 pgbench -t 10  -U benchuser -C -p 6432 -h 127.0.0.1 bench_alias
+#PGPASSWORD=bench123 pgbench -t 100000  -U benchuser -C -p 6432 -h 127.0.0.1 bench_alias
 
 # 22. Clone the git repository at https://github.com/darold/pgbadger.git
+yum -y -q install git
 git clone https://github.com/darold/pgbadger.git
 
 # 23. Run ./pgbadger -f stderr /var/lib/pgsql/<your_pg_version>/data/log/*

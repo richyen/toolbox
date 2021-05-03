@@ -56,6 +56,7 @@ psql -c "ALTER SYSTEM SET log_autovacuum_min_duration TO 0"
 psql -c "ALTER SYSTEM SET log_line_prefix TO '%t [%p]: [%l-1] user=%u,db=%d,app=%a,client=%h'"
 psql -c "SELECT pg_reload_conf()"
 
+yum -y -q install pgbouncer
 chown -R pgbouncer:pgbouncer /etc/pgbouncer
 echo '"benchuser" "md5f141e18e8635983f5f719a405cf1a49d"' > /tmp/userlist.txt
 curl -s "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/assessment/edbstore.sql" > /tmp/edbstore.sql
@@ -63,6 +64,8 @@ curl -s "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/ass
 
 echo "test environment ready"
 
+/docker/apply_answers.sh
+/docker/check_answers.sh
 ### For Docker entrypoint
 [[ -z ${USEDOCKER} ]] && exit
 tail -f /dev/null
