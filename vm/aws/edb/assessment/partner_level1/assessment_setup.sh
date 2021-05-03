@@ -2,7 +2,7 @@
 
 ### Provision a VM for assessment
 
-if [[ $(( whoami )) != 'root' ]]; then
+if [[ $( whoami ) != 'root' ]]; then
   echo "Please run this script as root user"
   exit 1
 fi
