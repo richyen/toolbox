@@ -2,8 +2,7 @@
 
 ### Provision a VM for assessment
 
-NODOCKER=1
-if [[ ${NODOCKER} -eq 1 ]]; then
+if [[ -z ${USEDOCKER} ]]; then
   # Take in env variable, or use commandline arg
   : "${SSH_PUB_KEY:=$1}"
   : "${SSH_PUB_KEY:?Need to set SSH_PUB_KEY}"
@@ -19,7 +18,7 @@ export PGHOME="/var/lib/pgsql"
 export PGINSTALL="/usr/pgsql-${PGVERSION}/bin"
 export PATH="${PGINSTALL}:${PATH}"
 
-if [[ ${NODOCKER} -eq 1 ]]; then
+if [[ -z ${USEDOCKER} ]]; then
   ### Installation
   rpm -ivh https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
   yum -q -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -65,5 +64,5 @@ curl -s "https://raw.githubusercontent.com/richyen/toolbox/master/vm/aws/edb/ass
 echo "test environment ready"
 
 ### For Docker entrypoint
-[[ ${NODOCKER} -eq 1 ]] && exit
+[[ -z ${USEDOCKER} ]] && exit
 tail -f /dev/null
