@@ -9,6 +9,11 @@ PATH="${PGINSTALL}:${PATH}"
 REPLICA=/mnt/replica
 DBNAME=test_db
 
+if [[ $( whoami ) != 'postgres' ]]; then
+  echo "Please run this script as postgres user"
+  exit 1
+fi
+
 # 1. The database is down.  Please start up postgres to begin the recovery effort
 chmod -R 700 ${PGDATA}
 chmod 700 /db/wal
