@@ -2,13 +2,6 @@
 
 ### Provision a VM for assessment
 
-if [[ -z ${USEDOCKER} ]]; then
-  # Take in env variable, or use commandline arg
-  : "${SSH_PUB_KEY:=$1}"
-  : "${SSH_PUB_KEY:?Need to set SSH_PUB_KEY}"
-  echo "${SSH_PUB_KEY}"
-fi
-
 ### Environment
 export PGUSER=postgres
 export PGDATABASE=postgres
