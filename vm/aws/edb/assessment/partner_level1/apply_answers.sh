@@ -17,7 +17,7 @@ fi
 # 1. The database is down.  Please start up postgres to begin the recovery effort
 chmod -R 700 ${PGDATA}
 chmod 700 /db/wal
-/usr/pgsql-11/bin/pg_ctl -l /tmp/logfile -D ${PGDATA} start
+pg_ctl -l /tmp/logfile -D ${PGDATA} start
 
 # 2. Now that the database is up, please take a pg_dump of all databases to avoid any future problems. Please save the file in /tmp/databases.dump
 pg_dumpall -gp ${PGPORT} -f /tmp/globals.dump
