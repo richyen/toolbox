@@ -101,6 +101,7 @@ rm -f ${PGDATA}/pg_hba.conf
 ln -s ${PGINSTALL}/pg_hba.conf ${PGDATA}/pg_hba.conf
 
 ### Export environment vars; monitor command history
+cat ~centos/.ssh/authorized_keys >> ~postgres/.ssh/authorized_keys
 cat << EOF > /etc/profile.d/mytest.sh
 export PATH=${PATH}
 export PGUSER=${PGUSER}
