@@ -6,7 +6,7 @@ then
   exit 1
 fi
 
-CENTOSVER=8
+CENTOSVER=7
 PGMAJOR=${1}
 RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${CENTOSVER}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
