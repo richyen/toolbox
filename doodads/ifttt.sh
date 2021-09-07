@@ -13,7 +13,8 @@ if [ -z "$EVENT" ]; then
 fi
 
 # Run desired script
-echo "foo" >> /tmp/log.log
+LOGFILE=/tmp/log.log
+echo "foo" >> ${LOGFILE}
 
 # Capture exit status
 if [[ ${?} -eq 0 ]]; then
@@ -23,8 +24,9 @@ else
 fi
 
 # Grab the last few lines of log
-MESSAGE=$(tail -n 5 /tmp/log.log | tr '\n' '|')
+MESSAGE=$(tail -n 5 ${LOGFILE} | tr '\n' '|')
 
+# Send it all to IFTTT
 URL="https://maker.ifttt.com/trigger/$EVENT/json/with/key/$IFTTT_KEY"
 DATA="{\"value1\":\"${STATUS}\",\"value2\":\"${MESSAGE}\",\"value3\":\"$@\"}"
 RTN="$(curl -s -X POST -H "Content-Type: application/json" -d "$DATA" "$URL")"
