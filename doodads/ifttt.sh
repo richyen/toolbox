@@ -13,8 +13,9 @@ if [ -z "$EVENT" ]; then
 fi
 
 # Run desired script
-LOGFILE=/tmp/log.log
-echo "foo" >> ${LOGFILE}
+LOGFILE=/tmp/$( date "+%F_%H")_ifttt.log
+echo foo >> ${LOGFILE}
+md5sum ${LOGFILE} >> ${LOGFILE}
 
 # Capture exit status
 if [[ ${?} -eq 0 ]]; then
@@ -24,7 +25,7 @@ else
 fi
 
 # Grab the last few lines of log
-MESSAGE=$(tail -n 5 ${LOGFILE} | tr '\n' '|')
+MESSAGE=$(tail -n 5 ${LOGFILE} | sed ':a;N;$!ba;s/\n/ | /g')
 
 # Send it all to IFTTT
 URL="https://maker.ifttt.com/trigger/$EVENT/json/with/key/$IFTTT_KEY"

@@ -4,3 +4,4 @@ instantclient*
 *.vdi
 ldap_server.key
 ldap_server.pem
+@eaDir
