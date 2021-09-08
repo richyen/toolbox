@@ -5,7 +5,7 @@
 
 . ~/.ifttt
 
-[ -z "$IFTTT_KEY" ] && echo "Please set your IFTTT key in ~/.ifttt.\nFormat:\n\nexport IFTTT_KEY=<your_key>" && exit 1
+[ -z "$IFTTT_KEY" ] && echo "Please set your IFTTT key in ~/.ifttt\n\nFormat:\nexport IFTTT_KEY=<your_key>" && exit 1
 
 if [ -z "$EVENT" ]; then
     # If not defined in ~/.ifttt, then specify a default event name here
