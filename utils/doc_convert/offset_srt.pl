@@ -7,7 +7,7 @@ use strict;
 sub offset_file {
   my ($filename, $slide_target, $time_target, $begin_slidenum, $end_slidenum) = @_;
   open(my $file, '<', $filename) or die "could not open $filename: $!";
-  
+
   my $slide_offset = $begin_slidenum - $slide_target;
   my $time_offset;
   my $start_writing = 0;

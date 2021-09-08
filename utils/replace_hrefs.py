@@ -69,7 +69,7 @@ def fix_ampersands(file_text):
 
         convert_nl = re.compile('\n', re.M | re.S | re.I)
         no_nl = convert_nl.sub('\\\\n', cleaned_href)
-        
+
         convert_tab = re.compile('\t', re.M | re.S | re.I)
         no_tab = convert_tab.sub('\\\\t', no_nl)
 
@@ -99,7 +99,7 @@ def fix_equals(file_text):
 
         convert_nl = re.compile('\n', re.M | re.S | re.I)
         no_nl = convert_nl.sub('\\\\n', cleaned_href)
-        
+
         convert_tab = re.compile('\t', re.M | re.S | re.I)
         no_tab = convert_tab.sub('\\\\t', no_nl)
 

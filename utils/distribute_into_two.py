@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import random
-import smtplib 
+import smtplib
 
 #randomly divide a list of items into two groups
 
@@ -15,7 +15,7 @@ def dist_groups(data, num_per_group):
     while len(data) > num_per_group:
         rand = random.Random()
         rand.jumpahead(1)
-        rand_index = rand.randint(0, len(data) - 1) 
+        rand_index = rand.randint(0, len(data) - 1)
         item = data[rand_index]
         data.remove(item)
         group_assignment += item + "\n"
