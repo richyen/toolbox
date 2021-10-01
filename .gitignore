@@ -5,3 +5,4 @@ instantclient*
 ldap_server.key
 ldap_server.pem
 @eaDir
+.env

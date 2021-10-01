@@ -2,7 +2,7 @@
 version: '3'
 services:
    barman:
-        image: centos7/postgres:11.3
+        image: centos7/postgres:${TAG}
         container_name: barman
         hostname: barman
         privileged: true
@@ -11,6 +11,7 @@ services:
           - "5432"
         volumes:
           - ".:/docker"
+          - "${BARMAN_SOURCE}:/barman"
         entrypoint: "/docker/entrypoint.sh"
         networks:
             public:
