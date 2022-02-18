@@ -1,0 +1,51 @@
+---
+version: '3'
+services:
+   pgb:
+        image: centos7/postgres:12.8
+        container_name: pgb
+        hostname: pgb
+        privileged: true
+        tty: true
+        ports:
+          - "6432:6432"
+        volumes:
+          - ".:/docker"
+        entrypoint: "/docker/entrypoint.sh"
+        networks:
+            public:
+                ipv4_address: 10.111.221.10
+   pg1:
+        image: centos7/postgres:12.8
+        container_name: pg1
+        hostname: pg1
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - ".:/docker"
+        entrypoint: "/docker/entrypoint.sh"
+        networks:
+            public:
+                ipv4_address: 10.111.221.11
+   pg2:
+        image: centos7/postgres:12.8
+        container_name: pg2
+        hostname: pg2
+        privileged: true
+        tty: true
+        ports:
+          - "5432"
+        volumes:
+          - ".:/docker"
+        entrypoint: "/docker/entrypoint.sh"
+        networks:
+            public:
+                ipv4_address: 10.111.221.12
+networks:
+    public:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.111.221.1/24
