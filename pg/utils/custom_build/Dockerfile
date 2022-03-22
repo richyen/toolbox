@@ -6,8 +6,8 @@ ENV PGDATA="/var/lib/pgsql/data"
 RUN yum -y upgrade && \
     yum -y install epel-release && \
     yum -y groupinstall development && \
-    yum -y install syslog-ng git gcc readline-devel zlib-devel \
-                   crypto-devel openssl-devel libxml++-devel \
+    yum -y install python3 syslog-ng git gcc readline-devel zlib-devel \
+                   python3-devel crypto-devel openssl-devel libxml++-devel \
                    libxslt-devel bison-devel perl-ExtUtils-MakeMaker \
                    perl-ExtUtils-Embed pam-devel ldap-devel \
                    openldap-devel libuuid-devel uuid-devel \
