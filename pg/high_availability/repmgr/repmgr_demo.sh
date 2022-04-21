@@ -1,16 +1,16 @@
 #!/bin/bash
 
 ## Set environment variables
-PGDATA="/var/lib/pgsql/10/data"
+PGDATA="/var/lib/pgsql/11/data"
 RPDATA="/tmp/repmgr/data"
 
 ## Install repmgr
-yum -y install https://rpm.2ndquadrant.com/site/content/2ndquadrant-repo-10-1-1.el7.noarch.rpm
-yum -y install repmgr10
+yum -y install repmgr11
 
 ## Configure postgres
 su - postgres -c "pg_ctl -D ${PGDATA} -mf stop"
 sed -i "s/#hot_standby = off/hot_standby = on/" ${PGDATA}/postgresql.conf
+sed -i "s/#wal_log_hints.*/wal_log_hints = on/" ${PGDATA}/postgresql.conf
 echo "local repmgr      repmgr             trust" >> ${PGDATA}/pg_hba.conf
 echo "local replication repmgr             trust" >> ${PGDATA}/pg_hba.conf
 echo "host  repmgr      repmgr 127.0.0.1/0 trust" >> ${PGDATA}/pg_hba.conf
