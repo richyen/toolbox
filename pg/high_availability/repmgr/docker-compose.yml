@@ -1,0 +1,26 @@
+version: '3'
+services:
+  centos1:
+    image: centos:7
+    container_name: pg1
+    hostname: pg1
+    cap_add:
+      - ALL
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+      - "${PWD}:/docker"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    command: "/usr/sbin/init"
+  centos2:
+    image: centos:7
+    container_name: pg2
+    hostname: pg2
+    cap_add:
+      - ALL
+    privileged: true
+    volumes:
+      - "/sys/fs/cgroup:/sys/fs/cgroup"
+      - "${PWD}:/docker"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+    command: "/usr/sbin/init"
