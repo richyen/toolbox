@@ -4,7 +4,7 @@
 PGVERSION=11
 export PGUSER=postgres
 export PGDATABASE=postgres
-PGDATA="/var/lib/pgsql/${PGVERSION}/data"
+export PGDATA="/var/lib/pgsql/${PGVERSION}/data"
 
 ## Install postgres and repmgr
 yum install -y -q https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -12,6 +12,7 @@ yum install -y -q postgresql${PGVERSION}-server
 yum -y -q install repmgr${PGVERSION}
 # systemctl enable postgresql-${PGVERSION}
 echo "PATH=/usr/pgsql-${PGVERSION}/bin:\${PATH}" >> ~postgres/.bash_profile
+echo "PGDATA=/var/lib/pgsql/${PGVERSION}/data" >> ~postgres/.bash_profile
 
 if [[ $( hostname ) == 'pg1' ]]; then
   ## Configure postgres
@@ -42,11 +43,11 @@ if [[ $( hostname ) == 'pg1' ]]; then
   psql repmgr -c "CREATE TABLE foo (id int, name text)"
   psql repmgr -c "INSERT INTO foo VALUES (generate_series(1,100000),'bar')"
 
-  R=$( psql -h pg2 -Atc "select count(*) FROM foo" postgres postgres 2>/dev/null )
+  R=$( psql -h pg2 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
   C=${?}
   while [[ ${C} -ne 0 ]]; do
     echo "Waiting for pg2 to be up"
-    R=$( psql -h pg2 -Atc "select count(*) FROM foo" postgres postgres 2>/dev/null )
+    R=$( psql -h pg2 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
     C=${?}
     sleep 1
   done
@@ -65,11 +66,11 @@ if [[ $( hostname ) == 'pg2' ]]; then
   echo "conninfo='host=pg2 port=5432 user=repmgr dbname=repmgr connect_timeout=2'" >> /etc/repmgr.conf
   echo "data_directory='${PGDATA}'" >> /etc/repmgr.conf
 
-  R=$( psql -h pg1 -Atc "select count(*) FROM foo" postgres postgres 2>/dev/null )
+  R=$( psql -h pg1 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
   C=${?}
   while [[ ${C} -ne 0 ]]; do
     echo "Waiting for pg1 to be up"
-    R=$( psql -h pg1 -Atc "select count(*) FROM foo" postgres postgres 2>/dev/null )
+    R=$( psql -h pg1 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
     C=${?}
     sleep 1
   done
