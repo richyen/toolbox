@@ -10,7 +10,7 @@ PGDATA="/var/lib/pgsql/${PGVERSION}/data"
 yum install -y -q https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 yum install -y -q postgresql${PGVERSION}-server
 yum -y -q install repmgr${PGVERSION}
-systemctl enable postgresql-${PGVERSION}
+# systemctl enable postgresql-${PGVERSION}
 echo "PATH=/usr/pgsql-${PGVERSION}/bin:\${PATH}" >> ~postgres/.bash_profile
 
 if [[ $( hostname ) == 'pg1' ]]; then
