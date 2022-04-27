@@ -10,7 +10,7 @@ export REPMGR_CONF=/etc/repmgr/${PGVERSION}/repmgr.conf
 ## Install postgres and repmgr
 yum install -y -q https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 yum install -y -q postgresql${PGVERSION}-server
-yum -y -q install repmgr${PGVERSION}
+yum -y -q install repmgr_${PGVERSION}
 # systemctl enable postgresql-${PGVERSION}
 echo "PATH=/usr/pgsql-${PGVERSION}/bin:\${PATH}" >> ~postgres/.bash_profile
 echo "PGDATA=/var/lib/pgsql/${PGVERSION}/data" >> ~postgres/.bash_profile
