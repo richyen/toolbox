@@ -10,7 +10,6 @@ services:
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup"
       - "${PWD}:/docker"
-      - "/tmp/.X11-unix:/tmp/.X11-unix"
     command: "/usr/sbin/init"
   centos2:
     image: centos:7
@@ -22,5 +21,4 @@ services:
     volumes:
       - "/sys/fs/cgroup:/sys/fs/cgroup"
       - "${PWD}:/docker"
-      - "/tmp/.X11-unix:/tmp/.X11-unix"
     command: "/usr/sbin/init"
