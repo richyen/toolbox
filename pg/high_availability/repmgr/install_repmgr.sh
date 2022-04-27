@@ -5,6 +5,7 @@ PGVERSION=11
 export PGUSER=postgres
 export PGDATABASE=postgres
 export PGDATA="/var/lib/pgsql/${PGVERSION}/data"
+export REPMGR_CONF=/etc/repmgr/${PGVERSION}/repmgr.conf
 
 ## Install postgres and repmgr
 yum install -y -q https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -30,14 +31,14 @@ if [[ $( hostname ) == 'pg1' ]]; then
   createdb repmgr -O repmgr
 
   ## Configure repmgr for master node
-  echo "node_id=1" >> /etc/repmgr.conf
-  echo "node_name=node1" >> /etc/repmgr.conf
-  echo "conninfo='host=pg1 port=5432 user=repmgr dbname=repmgr connect_timeout=2'" >> /etc/repmgr.conf
-  echo "data_directory='${PGDATA}'" >> /etc/repmgr.conf
+  echo "node_id=1" >> ${REPMGR_CONF}
+  echo "node_name=node1" >> ${REPMGR_CONF}
+  echo "conninfo='host=pg1 port=5432 user=repmgr dbname=repmgr connect_timeout=2'" >> ${REPMGR_CONF}
+  echo "data_directory='${PGDATA}'" >> ${REPMGR_CONF}
 
   ## Register master node to repmgr
-  su - postgres -c "repmgr -f /etc/repmgr.conf primary register"
-  su - postgres -c "repmgr -f /etc/repmgr.conf cluster show"
+  su - postgres -c "repmgr -f ${REPMGR_CONF} primary register"
+  su - postgres -c "repmgr -f ${REPMGR_CONF} cluster show"
 
   ## Create some data
   psql repmgr -c "CREATE TABLE foo (id int, name text)"
@@ -61,10 +62,10 @@ fi
 
 if [[ $( hostname ) == 'pg2' ]]; then
   ## Configure repmgr for standby node
-  echo "node_id=2" >> /etc/repmgr.conf
-  echo "node_name=node2" >> /etc/repmgr.conf
-  echo "conninfo='host=pg2 port=5432 user=repmgr dbname=repmgr connect_timeout=2'" >> /etc/repmgr.conf
-  echo "data_directory='${PGDATA}'" >> /etc/repmgr.conf
+  echo "node_id=2" >> ${REPMGR_CONF}
+  echo "node_name=node2" >> ${REPMGR_CONF}
+  echo "conninfo='host=pg2 port=5432 user=repmgr dbname=repmgr connect_timeout=2'" >> ${REPMGR_CONF}
+  echo "data_directory='${PGDATA}'" >> ${REPMGR_CONF}
 
   R=$( psql -h pg1 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
   C=${?}
@@ -76,12 +77,12 @@ if [[ $( hostname ) == 'pg2' ]]; then
   done
 
   # Clone the master node into the standby node
-  su - postgres -c "repmgr -h pg1 -U repmgr -d repmgr -f /etc/repmgr.conf standby clone"
+  su - postgres -c "repmgr -h pg1 -U repmgr -d repmgr -f ${REPMGR_CONF} standby clone"
 
   systemctl start postgresql-${PGVERSION}
 
   # Register master node to repmgr
-  su - postgres -c "repmgr -f /etc/repmgr.conf standby register"
+  su - postgres -c "repmgr -f ${REPMGR_CONF} standby register"
   sleep 5;
-  su - postgres -c "repmgr -f /etc/repmgr.conf cluster show"
+  su - postgres -c "repmgr -f ${REPMGR_CONF} cluster show"
 fi
