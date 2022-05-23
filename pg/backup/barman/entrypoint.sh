@@ -3,6 +3,8 @@
 ### Very basic barman demo
 
 # Environment vars
+USE_ARCHIVER=0
+BARMANTEST_CONF="/etc/barman.d/barmantest.conf"
 PGUSER=postgres
 
 # Install barman
@@ -10,12 +12,11 @@ yum -y -q install epel-release
 yum -y -q install barman barman-cli
 
 # Configure barman
-cat << EOF >> /etc/barman.d/barmantest.conf
+cat << EOF >> ${BARMANTEST_CONF}
 [barmantest]
 description = "Basic barman test"
 conninfo = host=127.0.0.1 user=barman dbname=postgres
 backup_method = postgres
-streaming_archiver = on
 slot_name = barman
 ;retention_policy = RECOVERY WINDOW OF 2 WEEKS
 retention_policy = REDUNDANCY 2
@@ -24,10 +25,17 @@ wal_retention_policy = main
 EOF
 
 ## Optional, if we want to do archiver method
-# cat << EOF >> ${PGDATA}/postgresql.conf
-# archive_mode = on
-# archive_command = 'test -f %p'
-# EOF
+if [[ ${USE_ARCHIVER} -eq 1 ]]; then
+  usermod -a -G barman postgres
+  chmod 755 /var/lib/barman
+  echo "archiver = on" >> ${BARMANTEST_CONF}
+  cat << EOF >> ${PGDATA}/postgresql.conf
+archive_mode = on
+archive_command = 'cp %p /var/lib/barman/barmantest/incoming/%f'
+EOF
+else
+  echo "streaming_archiver = on" >> ${BARMANTEST_CONF}
+fi
 
 sed -i "s/repuser/barman/" ${PGDATA}/pg_hba.conf
 
@@ -54,7 +62,7 @@ su - barman -c "barman receive-wal --create-slot barmantest"
 su - barman -c "barman cron"
 
 # Generate some data
-pgbench -is 10
+pgbench -is 5
 
 # Start barman background procs
 su - barman -c "barman cron"
