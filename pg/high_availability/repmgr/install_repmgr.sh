@@ -41,23 +41,9 @@ if [[ $( hostname ) == 'pg1' ]]; then
   su - postgres -c "repmgr -f ${REPMGR_CONF} cluster show"
 
   ## Create some data
+  psql repmgr -c "CREATE EXTENSION repmgr"
   psql repmgr -c "CREATE TABLE foo (id int, name text)"
   psql repmgr -c "INSERT INTO foo VALUES (generate_series(1,100000),'bar')"
-
-  R=$( psql -h pg2 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
-  C=${?}
-  while [[ ${C} -ne 0 ]]; do
-    echo "Waiting for pg2 to be up"
-    R=$( psql -h pg2 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
-    C=${?}
-    sleep 1
-  done
-
-  # Verify replication worked
-  psql -h pg1 repmgr -c "SELECT count(*), 'should be 100,000' FROM foo"
-  psql repmgr -c "INSERT INTO foo VALUES (generate_series(100001,200000),'bar')"
-  sleep 10;
-  psql -h pg2 repmgr -c "SELECT count(*), 'should be 200,000' FROM foo"
 fi
 
 if [[ $( hostname ) == 'pg2' ]]; then
