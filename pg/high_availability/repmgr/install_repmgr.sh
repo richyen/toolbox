@@ -12,8 +12,8 @@ yum install -y -q https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x8
 yum install -y -q postgresql${PGVERSION}-server
 yum -y -q install repmgr_${PGVERSION}
 # systemctl enable postgresql-${PGVERSION}
-echo "PATH=/usr/pgsql-${PGVERSION}/bin:\${PATH}" >> ~postgres/.bash_profile
-echo "PGDATA=/var/lib/pgsql/${PGVERSION}/data" >> ~postgres/.bash_profile
+echo "PATH=/usr/pgsql-${PGVERSION}/bin:\${PATH}" >> ~${PGUSER}/.bash_profile
+echo "PGDATA=/var/lib/pgsql/${PGVERSION}/data" >> ~${PGUSER}/.bash_profile
 
 if [[ $( hostname ) == 'pg1' ]]; then
   ## Configure postgres
@@ -37,8 +37,8 @@ if [[ $( hostname ) == 'pg1' ]]; then
   echo "data_directory='${PGDATA}'" >> ${REPMGR_CONF}
 
   ## Register master node to repmgr
-  su - postgres -c "repmgr -f ${REPMGR_CONF} primary register"
-  su - postgres -c "repmgr -f ${REPMGR_CONF} cluster show"
+  su - ${PGUSER} -c "repmgr -f ${REPMGR_CONF} primary register"
+  su - ${PGUSER} -c "repmgr -f ${REPMGR_CONF} cluster show"
 
   ## Create some data
   psql repmgr -c "CREATE EXTENSION repmgr"
@@ -53,22 +53,22 @@ if [[ $( hostname ) == 'pg2' ]]; then
   echo "conninfo='host=pg2 port=5432 user=repmgr dbname=repmgr connect_timeout=2'" >> ${REPMGR_CONF}
   echo "data_directory='${PGDATA}'" >> ${REPMGR_CONF}
 
-  R=$( psql -h pg1 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
+  R=$( psql -h pg1 -Atc "select count(*) FROM foo" repmgr ${PGUSER} 2>/dev/null )
   C=${?}
   while [[ ${C} -ne 0 ]]; do
     echo "Waiting for pg1 to be up"
-    R=$( psql -h pg1 -Atc "select count(*) FROM foo" repmgr postgres 2>/dev/null )
+    R=$( psql -h pg1 -Atc "select count(*) FROM foo" repmgr ${PGUSER} 2>/dev/null )
     C=${?}
     sleep 1
   done
 
   # Clone the master node into the standby node
-  su - postgres -c "repmgr -h pg1 -U repmgr -d repmgr -f ${REPMGR_CONF} standby clone"
+  su - ${PGUSER} -c "repmgr -h pg1 -U repmgr -d repmgr -f ${REPMGR_CONF} standby clone"
 
   systemctl start postgresql-${PGVERSION}
 
   # Register master node to repmgr
-  su - postgres -c "repmgr -f ${REPMGR_CONF} standby register"
+  su - ${PGUSER} -c "repmgr -f ${REPMGR_CONF} standby register"
   sleep 5;
-  su - postgres -c "repmgr -f ${REPMGR_CONF} cluster show"
+  su - ${PGUSER} -c "repmgr -f ${REPMGR_CONF} cluster show"
 fi
