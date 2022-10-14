@@ -15,6 +15,7 @@ ENV PATH=/usr/pgsql-${PGMAJOR}/bin:${PATH}
 # run update and install required packages.
 RUN rpm -ivh ${RPM_URL} \
  && yum -y install yum-plugin-ovl \
+ && yum -y install epel-release \
  && yum -y update \
  && yum -y install postgresql${PGMAJOR/./}-server.x86_64
 
