@@ -1,0 +1,20 @@
+version: '3'
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    hostname: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  pg:
+    image: centos7/postgres:latest
+    container_name: pg
+    hostname: pg
+    environment:
+      - PGMAJOR=13
+    volumes:
+      - ./:/docker
+    entrypoint: /docker/entrypoint.sh
