@@ -1,7 +1,7 @@
 version: '3'
 services:
   pg:
-    image: centos7/postgres:latest
+    image: pg_fdw:latest
     container_name: pg
     hostname: pg
     environment:

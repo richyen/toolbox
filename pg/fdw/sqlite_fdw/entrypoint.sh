@@ -8,7 +8,7 @@ yum -y install postgresql${PGMAJOR}-contrib
 su - postgres -c "pg_ctl -D /var/lib/pgsql/${PGMAJOR}/data start"
 git clone https://github.com/pgspider/sqlite_fdw.git
 cd sqlite_fdw && make USE_PGXS=1 && make USE_PGXS=1 install
-sqlite3 /tmp/sqlite_fdw.db "CREATE TABLE person test (id int, name text, dob text)"
+sqlite3 /tmp/sqlite_fdw.db "CREATE TABLE person (id int, name text, dob text)"
 sqlite3 /tmp/sqlite_fdw.db "INSERT INTO person VALUES (1, 'John Doe', '2020-01-01')"
 psql -c "create extension sqlite_fdw" postgres postgres
 psql -c "CREATE SERVER sqlite_server FOREIGN DATA WRAPPER sqlite_fdw options (database '/tmp/sqlite_fdw.db');" postgres postgres
