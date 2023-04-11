@@ -1,0 +1,11 @@
+version: '3'
+services:
+  pg:
+    image: centos7/postgres:latest
+    container_name: pg
+    hostname: pg
+    environment:
+      - PGMAJOR=13
+    volumes:
+      - ./:/docker
+    entrypoint: /docker/entrypoint.sh

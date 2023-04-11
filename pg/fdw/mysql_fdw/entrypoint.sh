@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Install -contrib on db2
 if [[ ${HOSTNAME} == 'pg' ]]; then
   yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   yum -y install centos-release-scl-rh
