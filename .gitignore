@@ -6,3 +6,10 @@ ldap_server.key
 ldap_server.pem
 @eaDir
 .env
+
+# Terraform artifacts
+tf/.terraform/
+*.pem
+tf/servers.yml
+*.tfstate*
+**/.terraform.lock.hcl
