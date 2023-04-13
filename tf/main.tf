@@ -103,7 +103,7 @@ resource "null_resource" "configure" {
   }
 
   provisioner "file" {
-    source      = "/home/richyen/.ssh/id_rsa"
+    source      = pathexpand("~/.ssh/id_rsa")
     destination = "/home/${var.ssh_user}/.ssh/id_rsa"
   }
 
@@ -116,7 +116,7 @@ resource "null_resource" "configure" {
   }
 
   provisioner "file" {
-    source      = "/home/richyen/.exports_local"
+    source      = pathexpand("~/.exports_local")
     destination = "/home/${var.ssh_user}/.exports_local"
   }
 }
