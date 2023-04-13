@@ -44,7 +44,7 @@ resource "aws_security_group" "rules" {
       // This means, all ip address are allowed !
       // Not recommended for production.
       // Limit IP Addresses in a Production Environment !
-      cidr_blocks = [var.public_cidrblock]
+      cidr_blocks = [var.private_cidrblock]
     }
   }
 

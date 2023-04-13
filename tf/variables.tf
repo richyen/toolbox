@@ -65,6 +65,12 @@ variable "public_cidrblock" {
   default     = "0.0.0.0/0"
 }
 
+variable "private_cidrblock" {
+  description = "Private CIDR block"
+  type        = string
+  default     = "127.0.0.1/32"
+}
+
 # IAM Force Destroy
 variable "user_force_destroy" {
   description = "Force destroying AWS IAM User and dependencies"
