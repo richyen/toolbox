@@ -9,12 +9,3 @@ services:
     volumes:
       - ./:/docker
     entrypoint: /docker/entrypoint.sh
-  multicor2n:
-    image: centos7/postgres:latest
-    container_name: multicorn2
-    hostname: multicorn2
-    environment:
-      - PGMAJOR=13
-    volumes:
-      - ./:/docker
-    entrypoint: /docker/entrypoint.sh
