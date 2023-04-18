@@ -5,7 +5,7 @@ services:
     container_name: pg1
     hostname: pg1
     environment:
-      - PGMAJOR=12
+      - PGMAJOR=13
     volumes:
       - ./:/docker
     entrypoint: /docker/entrypoint.sh
@@ -14,7 +14,7 @@ services:
     container_name: pg2
     hostname: pg2
     environment:
-      - PGMAJOR=12
+      - PGMAJOR=13
     volumes:
       - ./:/docker
     entrypoint: /docker/entrypoint.sh
