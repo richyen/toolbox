@@ -4,7 +4,7 @@
 
 dir=${1:-.}
 do_it=${2:-0}
-outfile="/Users/richyen/Desktop/date_prefix_out.txt"
+outfile="${HOME}/Desktop/date_prefix_out.txt"
 counter=1
 for i in `ls ${dir}`
 do
