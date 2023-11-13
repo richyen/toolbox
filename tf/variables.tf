@@ -68,7 +68,7 @@ variable "public_cidrblock" {
 variable "private_cidrblock" {
   description = "Private CIDR block"
   type        = string
-  default     = "127.0.0.1/32"
+  default     = "23.125.120.241/32"
 }
 
 # IAM Force Destroy
