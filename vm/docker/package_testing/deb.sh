@@ -5,7 +5,7 @@ log="output.log"
 
 for os in ${os_list}; do
   echo ${os}
-  packages_list=`psql -h ${PGHOST} -U strapi prdata -Atc "SELECT name FROM edb_repo.distributables WHERE operating_system_id = (SELECT id from edb_repo.operating_systems WHERE lower(name) || ':' || version = '${os}' ORDER BY id DESC LIMIT 100)"`
+  packages_list=`psql -h ${PGHOST} -U strapi prdata -Atc "SELECT distinct(name) FROM edb_repo.distributables WHERE operating_system_id = (SELECT id from edb_repo.operating_systems WHERE lower(name) || ':' || version = '${os}' ORDER BY id DESC LIMIT 100)"`
   for pkg in ${packages_list}; do
   echo ${pkg}
   echo "ATTEMPT - ${pkg} on ${os}" >> ${log}
