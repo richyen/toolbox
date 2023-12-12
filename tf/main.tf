@@ -30,7 +30,7 @@ resource "aws_security_group" "rules" {
     from_port   = 0
     to_port     = 0
     protocol    = -1
-    cidr_blocks = [var.public_cidrblock]
+    cidr_blocks = [var.egress_cidrblock]
   }
 
   dynamic "ingress" {
@@ -44,7 +44,7 @@ resource "aws_security_group" "rules" {
       // This means, all ip address are allowed !
       // Not recommended for production.
       // Limit IP Addresses in a Production Environment !
-      cidr_blocks = [var.private_cidrblock]
+      cidr_blocks = [var.private_subnet_cidrblock]
     }
   }
 
@@ -69,17 +69,17 @@ resource "aws_key_pair" "key_pair" {
   key_name = var.key_name
 }
 
-data "aws_subnet" "selected" {
+data "aws_subnet" "public" {
   vpc_id            = var.vpc_id
-  availability_zone = var.az
-  cidr_block        = var.cidr_block
+  availability_zone = var.subnet_az
+  cidr_block        = var.public_subnet_cidrblock
 }
 
 resource "aws_instance" "machine" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
   key_name               = aws_key_pair.key_pair.id
-  subnet_id              = data.aws_subnet.selected.id
+  subnet_id              = data.aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.rules.id]
 
   root_block_device {
@@ -129,7 +129,7 @@ resource "local_file" "servers_yml" {
 servers:
     type: ${var.instance_type}
     region: ${var.aws_region}
-    az: ${var.az}
+    az: ${var.subnet_az}
     public_ip: ${aws_instance.machine.public_ip}
     private_ip: ${aws_instance.machine.private_ip}
     public_dns: ${aws_instance.machine.public_dns}
