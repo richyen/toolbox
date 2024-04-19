@@ -41,9 +41,6 @@ resource "aws_security_group" "rules" {
       to_port   = service_port.value.port
       protocol  = service_port.value.protocol
       description = service_port.value.description
-      // This means, all ip address are allowed !
-      // Not recommended for production.
-      // Limit IP Addresses in a Production Environment !
       cidr_blocks = [var.private_subnet_cidrblock]
     }
   }
