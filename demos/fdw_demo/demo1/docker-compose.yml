@@ -1,20 +1,19 @@
-version: '3'
 services:
   pg1:
-    image: centos7/postgres:latest
+    image: rockylinux9/postgres:latest
     container_name: pg1
     hostname: pg1
     environment:
-      - PGMAJOR=13
+      - PGMAJOR=15
     volumes:
       - ./:/docker
     entrypoint: /docker/entrypoint.sh
   pg2:
-    image: centos7/postgres:latest
+    image: rockylinux9/postgres:latest
     container_name: pg2
     hostname: pg2
     environment:
-      - PGMAJOR=13
+      - PGMAJOR=15
     volumes:
       - ./:/docker
     entrypoint: /docker/entrypoint.sh
