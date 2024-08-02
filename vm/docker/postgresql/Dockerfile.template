@@ -1,4 +1,4 @@
-FROM centos:7
+FROM rockylinux:9
 MAINTAINER richyen3@gmail.com
 
 ARG PGMAJOR
@@ -14,10 +14,10 @@ ENV PATH=/usr/pgsql-${PGMAJOR}/bin:${PATH}
 
 # run update and install required packages.
 RUN rpm -ivh ${RPM_URL} \
- && yum -y install yum-plugin-ovl \
- && yum -y install epel-release \
- && yum -y update \
- && yum -y install postgresql${PGMAJOR/./}-server.x86_64
+ && dnf -qy module disable postgresql \
+ && dnf -y install epel-release \
+ && dnf -y update \
+ && dnf -y install postgresql${PGMAJOR/./}-server.x86_64
 
 RUN su - postgres -c "/usr/pgsql-${PGMAJOR}/bin/initdb -D ${PGDATA} --no-locale -E UTF8"
 

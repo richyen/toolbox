@@ -6,9 +6,9 @@ then
   exit 1
 fi
 
-CENTOSVER=7
+ELVER=9
 PGMAJOR=${1}
-RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${CENTOSVER}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${ELVER}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 
 
 # For some reason, sometimes this is needed, but sometimes not (maybe depending on the mirror, the paths might be different)
@@ -19,33 +19,26 @@ RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${CENTOSVER}-
 #       -e "s!PGLOG=/var/lib/pgsql/\${PGMAJOR}/pgstartup.log!PGLOG=/var/lib/pgsql/pgstartup.log!" -i Dockerfile
 # fi
 
-if [[ ${CENTOSVER} -gt 6 ]]; then
-  sed -e "s/^FROM centos:.*/FROM centos:${CENTOSVER}/" \
-      -e "s/^#RUN su/RUN su/" \
-      -e "s/^RUN service/#RUN service/" \
-      -e "s/^CMD.*/CMD tail -F \/var\/log\/yum.log/" Dockerfile.template > Dockerfile
-  if [[ ${CENTOSVER} -eq 8 ]]; then
-    sed -i "" -e "s/yum /dnf /" \
-           -e "s/y install yum-plugin-ovl/qy module disable postgresql/" Dockerfile
-  fi
-else
-  cp Dockerfile.template Dockerfile
-fi
+sed -e "s/^FROM rockylinux:.*/FROM rockylinux:${ELVER}/" \
+    -e "s/^#RUN su/RUN su/" \
+    -e "s/^RUN service/#RUN service/" \
+    -e "s/^CMD.*/CMD tail -F \/var\/log\/yum.log/" Dockerfile.template > Dockerfile
+sed -e "s/y install yum-plugin-ovl/qy module disable postgresql/" Dockerfile
 
 if [[ "${2}" == "do_build" ]]
 then
   # Assume this is the latest version
-  docker build --build-arg PGMAJOR=${PGMAJOR} --build-arg RPM_URL=${RPM_URL} -t centos${CENTOSVER}/postgres:latest .
+  docker build --build-arg PGMAJOR=${PGMAJOR} --build-arg RPM_URL=${RPM_URL} -t rockylinux${ELVER}/postgres:latest .
 
   # Give the image an actual version tag
-  VN=`docker run -it --rm centos${CENTOSVER}/postgres:latest psql --version | awk '{ print \$3 }'| tr -d '\r'`
-  docker tag centos${CENTOSVER}/postgres:latest centos${CENTOSVER}/postgres:${VN}
+  VN=`docker run -it --rm rockylinux${ELVER}/postgres:latest psql --version | awk '{ print \$3 }'| tr -d '\r'`
+  docker tag rockylinux${ELVER}/postgres:latest rockylinux${ELVER}/postgres:${VN}
 
   if [[ "${3}x" != "x" ]]
   then
     # Update registry too
-    docker tag centos${CENTOSVER}/postgres:${VN} ${3}/centos${CENTOSVER}/postgres:${VN}
-    docker push ${3}/centos${CENTOSVER}/postgres:${VN}
+    docker tag rockylinux${ELVER}/postgres:${VN} ${3}/rockylinux${ELVER}/postgres:${VN}
+    docker push ${3}/rockylinux${ELVER}/postgres:${VN}
   fi
 
   rm -f Dockerfile
