@@ -1,10 +1,9 @@
-FROM centos7/postgres:13.0
+FROM rockylinux9/postgres:13
 
 # Install Yum packages
-RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-    yum -y install centos-release-scl-rh && \
+RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm && \
     yum -y groupinstall development && \
-    yum -y install postgresql${PGMAJOR}-devel postgresql${PGMAJOR}-contrib llvm-devel vim git python3-devel sqlite-devel mariadb-devel
+    yum -y install --enablerepo=devel postgresql${PGMAJOR}-devel postgresql${PGMAJOR}-contrib python3-pip llvm-devel vim git multicorn2_${PGMAJOR} sqlite-devel mariadb-devel
 
 # Install mysql_fdw
 RUN git clone https://github.com/enterprisedb/mysql_fdw.git && cd mysql_fdw && make USE_PGXS=1 && make USE_PGXS=1 install && cd ../
@@ -13,7 +12,7 @@ RUN git clone https://github.com/enterprisedb/mysql_fdw.git && cd mysql_fdw && m
 RUN git clone https://github.com/pgspider/sqlite_fdw.git && cd sqlite_fdw && make USE_PGXS=1 && make USE_PGXS=1 install && cd ../
 
 # Install multicorn
-RUN git clone https://github.com/Segfault-Inc/Multicorn.git && cd Multicorn && make && make install && cd ../
+#RUN git clone https://github.com/Segfault-Inc/Multicorn.git && cd Multicorn && make && make install && cd ../
 
 # Create extensions
 RUN su - postgres -c "pg_ctl -D /var/lib/pgsql/${PGMAJOR}/data start" && \

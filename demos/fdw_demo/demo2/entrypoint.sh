@@ -4,8 +4,8 @@
 su - postgres -c "pg_ctl -D $PGDATA start"
 
 # Install Faker
-pip3 install Faker
-pip3 install https://github.com/guedes/faker_fdw/archive/v0.2.4.zip
+pip install Faker
+pip install https://github.com/guedes/faker_fdw/archive/v0.2.4.zip
 
 # Create SQLite database
 sqlite3 /tmp/call_log.db "CREATE TABLE call_log (source_number varchar(15), target_number varchar(15), duration_secs int)"

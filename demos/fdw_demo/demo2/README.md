@@ -1,5 +1,7 @@
 Demonstrate ability to connect to MySQL and SQLite via FDW
 
+** Before starting up, be sure to `docker compose build` to build the pgdemo image **
+
 1. Start up cluster with `docker compose up`
 1. Demonstrate that data lives in mysql but not pg
 1. Connect to `pg` container and create foreign table to mysql: `psql -c "CREATE FOREIGN TABLE mysql_phone_catalog (ssn text, name text, phone_number text, address text) SERVER mysql_server OPTIONS (dbname 'mysql_demo', table_name 'phone_catalog');" postgres postgres`
