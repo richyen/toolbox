@@ -1,6 +1,6 @@
 Basic `postgres_fdw` demo, using `pgbench`
 
-Runs on two CentOS 7 containers
+Runs on two Rocky Linux 9 containers
 
 ### Basic demo of setup
 1. Start both containers with `docker compose up`
