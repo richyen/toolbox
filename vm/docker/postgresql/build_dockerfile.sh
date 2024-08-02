@@ -8,22 +8,21 @@ fi
 
 ELVER=9
 PGMAJOR=${1}
+
+# On x86_64 machines
 RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${ELVER}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
-
-
-# For some reason, sometimes this is needed, but sometimes not (maybe depending on the mirror, the paths might be different)
-# if [[ ${PGMAJOR/./} -lt 93 ]]
-# then
-#   sed -e "s/postgresql-\${PGMAJOR}/postgresql/" \
-#       -e "s!PGDATA=/var/lib/pgsql/\${PGMAJOR}/data!PGDATA=/var/lib/pgsql/data!" \
-#       -e "s!PGLOG=/var/lib/pgsql/\${PGMAJOR}/pgstartup.log!PGLOG=/var/lib/pgsql/pgstartup.log!" -i Dockerfile
-# fi
+# On Mac Silicon machines
+# RPM_URL="https://download.postgresql.org/pub/repos/yum/reporpms/EL-${ELVER}-aarch64/pgdg-redhat-repo-latest.noarch.rpm"
 
 sed -e "s/^FROM rockylinux:.*/FROM rockylinux:${ELVER}/" \
     -e "s/^#RUN su/RUN su/" \
     -e "s/^RUN service/#RUN service/" \
     -e "s/^CMD.*/CMD tail -F \/var\/log\/yum.log/" Dockerfile.template > Dockerfile
+
+# On x86_64 machines
 sed -e "s/y install yum-plugin-ovl/qy module disable postgresql/" Dockerfile
+# On Mac Silicon machines
+# sed -i "" -e "s/y install yum-plugin-ovl/qy module disable postgresql/" Dockerfile
 
 if [[ "${2}" == "do_build" ]]
 then
