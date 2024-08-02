@@ -1,6 +1,6 @@
 services:
   pg1:
-    image: rockylinux9/postgres:latest
+    image: rockylinux9/postgres:15
     container_name: pg1
     hostname: pg1
     environment:
@@ -9,7 +9,7 @@ services:
       - ./:/docker
     entrypoint: /docker/entrypoint.sh
   pg2:
-    image: rockylinux9/postgres:latest
+    image: rockylinux9/postgres:15
     container_name: pg2
     hostname: pg2
     environment:
