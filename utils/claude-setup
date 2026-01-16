@@ -1,0 +1,28 @@
+#!/bin/bash
+
+export AWS_PROFILE=Bedrock
+export NODE_EXTRA_CA_CERTS=${HOME}.certs/certadmin.pem
+export ANTHROPIC_MODEL=us.anthropic.claude-opus-4-5-20251101-v1:0
+export CLAUDE_CODE_USE_BEDROCK=1
+
+RUN_CLAUDE=false
+CLAUDE_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --run)
+            RUN_CLAUDE=true
+            shift
+            ;;
+        *)
+            CLAUDE_ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+aws sso login --profile Bedrock
+
+if [[ "$RUN_CLAUDE" == true ]]; then
+    exec claude "${CLAUDE_ARGS[@]}"
+fi
