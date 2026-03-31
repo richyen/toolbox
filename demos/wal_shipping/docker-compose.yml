@@ -1,0 +1,69 @@
+version: "3.8"
+
+# ============================================================
+# WAL-Shipping Demo — three containers:
+#   primary  – PostgreSQL 18, archive_command → /archive
+#   relay    – rsyncs WAL from primary every 60 s, serves it out
+#   standby  – PostgreSQL 18 hot-standby, restore_command reads
+#              from /archive (kept fresh by 60-s rsync from relay)
+# ============================================================
+
+services:
+
+  # ── Primary ────────────────────────────────────────────────
+  primary:
+    build: ./primary
+    container_name: pg_primary
+    hostname: primary
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - pgnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -q"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  # ── Relay ──────────────────────────────────────────────────
+  relay:
+    build: ./relay
+    container_name: pg_relay
+    hostname: relay
+    depends_on:
+      primary:
+        condition: service_healthy
+    networks:
+      - pgnet
+
+  # ── Standby ────────────────────────────────────────────────
+  standby:
+    build: ./standby
+    container_name: pg_standby
+    hostname: standby
+    environment:
+      PRIMARY_HOST: primary
+      REPLICATION_USER: replicator
+      REPLICATION_PASS: replicator
+    depends_on:
+      relay:
+        condition: service_started
+    ports:
+      - "5433:5432"
+    networks:
+      - pgnet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -q"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 120s
+
+networks:
+  pgnet:
+    driver: bridge
