@@ -15,7 +15,7 @@ services:
     container_name: pg
     hostname: pg
     environment:
-      - PGMAJOR=13
+      - PGMAJOR=17
     volumes:
       - ./:/docker
     entrypoint: /docker/entrypoint.sh
