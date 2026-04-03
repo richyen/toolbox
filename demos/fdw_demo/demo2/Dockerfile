@@ -5,24 +5,24 @@ ENV PGMAJOR=17
 RUN apt-get update && \
     apt-get install -y \
         build-essential \
-        postgresql-server-dev-${PGMAJOR} \
-        postgresql-contrib \
+        postgresql-server-dev-17 \
         python3 \
         python3-venv \
         python3-pip \
         llvm-dev \
         vim \
         git \
+        sqlite3 \
         libsqlite3-dev \
         libmariadb-dev-compat \
         ca-certificates \
         && rm -rf /var/lib/apt/lists/*
 
 # Create virtualenv for multicorn
-RUN python3 -m venv /opt/venv
+# RUN python3 -m venv /opt/venv
 
 # Install multicorn inside venv
-RUN /opt/venv/bin/pip install multicorn
+# RUN /opt/venv/bin/pip install multicorn
 
 # Make sure Postgres can find it
 ENV PYTHONPATH="/opt/venv/lib/python3.*/site-packages"
@@ -40,4 +40,6 @@ RUN git clone https://github.com/pgspider/sqlite_fdw.git && \
     make USE_PGXS=1 install && \
     cd .. && rm -rf sqlite_fdw
 
-RUN echo "shared_preload_libraries = 'multicorn'" >> /usr/share/postgresql/postgresql.conf.sample
+# RUN echo "shared_preload_libraries = 'multicorn'" >> /usr/share/postgresql/postgresql.conf.sample
+
+CMD ["postgres"]
