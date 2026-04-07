@@ -1,0 +1,38 @@
+# Reproduces the JSONB indexing benchmarks from:
+#   _posts/2026-05-11-generated_columns_jsonb.markdown
+#
+# Usage:
+#   docker compose up                        # runs against default PG version
+#   PG_VERSION=17 docker compose up          # test a different PG version
+#   ./run.sh                                 # saves output to results/ automatically
+#
+# Results are written to ./results/benchmark_pgVERSION_TIMESTAMP.txt
+
+services:
+  postgres:
+    image: postgres:${PG_VERSION:-18.2}
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bench
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bench"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  benchmark:
+    image: postgres:${PG_VERSION:-18.2}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: bench
+      PG_VERSION: ${PG_VERSION:-18.2}
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./results:/results
+    command: bash /scripts/run_bench.sh
+    restart: "no"
