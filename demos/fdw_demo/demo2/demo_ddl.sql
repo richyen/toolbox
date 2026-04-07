@@ -1,8 +1,8 @@
 -- Create Faker FDW
-CREATE SERVER faker_srv FOREIGN DATA WRAPPER multicorn OPTIONS (wrapper 'faker_fdw.FakerForeignDataWrapper');
-CREATE SCHEMA fake;
-CREATE FOREIGN TABLE fake.person (ssn varchar, name varchar, phone_number varchar, address text) SERVER faker_srv OPTIONS (max_results '100');
-ALTER FOREIGN TABLE fake.person OPTIONS ( add seed '1234' );
+-- CREATE SERVER faker_srv FOREIGN DATA WRAPPER multicorn OPTIONS (wrapper 'faker_fdw.FakerForeignDataWrapper');
+-- CREATE SCHEMA fake;
+-- CREATE FOREIGN TABLE fake.person (ssn varchar, name varchar, phone_number varchar, address text) SERVER faker_srv OPTIONS (max_results '100');
+-- ALTER FOREIGN TABLE fake.person OPTIONS ( add seed '1234' );
 
 -- Load data into SQL for later FDW access
 CREATE FOREIGN TABLE sqlite_call_log (source_number text, target_number text, duration_secs int) SERVER sqlite_server OPTIONS (table 'call_log');

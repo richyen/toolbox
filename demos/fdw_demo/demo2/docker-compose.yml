@@ -14,8 +14,11 @@ services:
     build: .
     container_name: pg
     hostname: pg
+    restart: always
     environment:
-      - PGMAJOR=13
+      - PGMAJOR=17
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - ./:/docker
-    entrypoint: /docker/entrypoint.sh
+      - ./init_scripts:/docker-entrypoint-initdb.d

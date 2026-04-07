@@ -1,6 +1,6 @@
 Basic `postgres_fdw` demo, using `pgbench`
 
-Runs on two Rocky Linux 9 containers
+Runs on two postgres:18 containers
 
 ### Basic demo of setup
 1. Start both containers with `docker compose up`
@@ -8,7 +8,7 @@ Runs on two Rocky Linux 9 containers
 1. Show that `pg1` has `pgbench` schema already installed
 1. Open `bash` shell for `pg2`
 1. Show that `pg2` has no tables or data
-1. Explain the contents of `fdw_ddl.sql` and demonstrate creation of FDW elements by running `fdw.ddl.sql` on `pg2`
+1. Explain the contents of `fdw_ddl.sql` and demonstrate creation of FDW elements by running `\i /docker/fdw.ddl.sql` on `pg2`
 
 ### Intermediate steps for demo
 1. Perform DML on `foreign_table` with: `UPDATE foreign_table SET bid = aid`

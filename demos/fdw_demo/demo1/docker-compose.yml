@@ -1,19 +1,25 @@
 services:
   pg1:
-    image: rockylinux9/postgres:15
+    image: postgres:18
     container_name: pg1
     hostname: pg1
+    restart: always
     environment:
-      - PGMAJOR=15
+      - PGMAJOR=18
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - ./:/docker
-    entrypoint: /docker/entrypoint.sh
+      - ./init_scripts:/docker-entrypoint-initdb.d
   pg2:
-    image: rockylinux9/postgres:15
+    image: postgres:18
     container_name: pg2
     hostname: pg2
+    restart: always
     environment:
-      - PGMAJOR=15
+      - PGMAJOR=18
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_HOST_AUTH_METHOD=trust
     volumes:
       - ./:/docker
-    entrypoint: /docker/entrypoint.sh
+      - ./init_scripts:/docker-entrypoint-initdb.d
