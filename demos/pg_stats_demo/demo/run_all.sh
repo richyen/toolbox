@@ -11,7 +11,8 @@ for f in \
     /demo/02_mcv_skew.sql \
     /demo/03_histograms.sql \
     /demo/04_correlated_columns.sql \
-    /demo/05_fix_with_extended_stats.sql ; do
+    /demo/05_fix_with_extended_stats.sql \
+    /demo/06_cost_knobs.sql ; do
     echo
     echo "================================================================"
     echo "  $f"

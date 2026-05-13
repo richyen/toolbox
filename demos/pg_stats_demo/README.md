@@ -27,6 +27,7 @@ pg_stats_demo/
     ├── 03_histograms.sql           -- slides 11-13
     ├── 04_correlated_columns.sql   -- slides 14-15
     ├── 05_fix_with_extended_stats.sql -- slides 16-18
+    ├── 06_cost_knobs.sql            -- planner cost-model knobs
     └── run_all.sh                  -- run every demo end-to-end
 ```
 
@@ -66,6 +67,7 @@ Then run a script from inside psql:
 \i /demo/03_histograms.sql
 \i /demo/04_correlated_columns.sql
 \i /demo/05_fix_with_extended_stats.sql
+\i /demo/06_cost_knobs.sql
 ```
 
 Or run everything from your host shell:
@@ -178,6 +180,30 @@ That `0.994700` is "if you know `city`, you know `state` 99.47%
 of the time" — exactly the relationship that broke the
 independence assumption. The new plan shows `rows=4100` against
 an actual `rows=3822`, i.e. within 7%.
+
+### 06 — Planner cost knobs (index vs. seq scan)
+
+Even with perfect stats, the planner's index-vs-seq-scan
+choice depends on the **cost model**. This demo holds the
+stats constant and walks through three GUCs:
+
+- `random_page_cost` (default `4.0`) — cost of a random page
+  fetch. Dominates Index Scan cost. Raising it to `40.0`
+  (spinning-rust style) flips `state='WY'` from Index Scan to
+  Seq Scan. Dropping it to `1.1` (SSD style) keeps the index
+  attractive even for more common values like `state='NY'`.
+- `seq_page_cost` (default `1.0`) — cost of a sequential page
+  fetch. Only the *ratio* `random_page_cost / seq_page_cost`
+  really matters to the planner; the demo demonstrates this
+  by raising `seq_page_cost` and watching the index look
+  relatively cheaper.
+- `cpu_tuple_cost` (default `0.01`) — per-tuple CPU cost.
+  Seq Scan pays this on every row in the table; Index Scan
+  only pays it on matched rows. Cranking it to `1.0` pushes
+  the planner toward the index even for common values.
+
+The demo runs with `enable_bitmapscan = off` so the contrast
+is a clean Seq Scan vs. Index Scan (same trick as demo 02).
 
 ---
 
