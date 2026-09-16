@@ -1,0 +1,52 @@
+# ============================================================
+# HammerDB TPROC-C Demo — two containers:
+#   pg       – PostgreSQL 16 target database
+#   hammerdb – Ubuntu container with HammerDB installed, used to
+#              build the TPROC-C schema and drive the workload
+# ============================================================
+
+services:
+
+  # ── Postgres target ────────────────────────────────────────
+  pg:
+    image: postgres:18
+    container_name: hammerdb_pg
+    hostname: pg
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - hammernet
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -q"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  # ── HammerDB client ────────────────────────────────────────
+  hammerdb:
+    build: ./client
+    # HammerDB's official Linux release is only published for x86_64;
+    # force amd64 (emulated via QEMU on Apple Silicon/arm64 hosts).
+    platform: linux/amd64
+    container_name: hammerdb_client
+    hostname: hammerdb
+    environment:
+      PGHOST: pg
+      PGPORT: 5432
+    depends_on:
+      pg:
+        condition: service_healthy
+    networks:
+      - hammernet
+    # Keep the container running so you can exec in and drive
+    # HammerDB interactively for the demo.
+    entrypoint: ["sleep", "infinity"]
+
+networks:
+  hammernet:
+    driver: bridge
