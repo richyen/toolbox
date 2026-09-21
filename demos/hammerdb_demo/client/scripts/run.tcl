@@ -15,7 +15,7 @@ diset tpcc pg_pass tpcc
 diset tpcc pg_driver timed
 diset tpcc pg_rampup 1
 diset tpcc pg_duration 2
-diset tpcc pg_allwarehouse false
+diset tpcc pg_allwarehouse true
 diset tpcc pg_timeprofile false
 
 vuset vu 4
