@@ -38,6 +38,9 @@ services:
     environment:
       PGHOST: pg
       PGPORT: 5432
+      PGPASSWORD: postgres
+      PGUSER: postgres
+      PGDATABASE: postgres
     depends_on:
       pg:
         condition: service_healthy

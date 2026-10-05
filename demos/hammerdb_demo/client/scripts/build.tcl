@@ -8,9 +8,9 @@ dbset bm TPC-C
 diset connection pg_host $env(PGHOST)
 diset connection pg_port $env(PGPORT)
 
-diset tpcc pg_superuser postgres
-diset tpcc pg_superuserpass postgres
-diset tpcc pg_defaultdbase postgres
+diset tpcc pg_superuser $env(PGUSER)
+diset tpcc pg_superuserpass $env(PGPASSWORD)
+diset tpcc pg_defaultdbase $env(PGDATABASE)
 diset tpcc pg_dbase tpcc
 diset tpcc pg_user tpcc
 diset tpcc pg_pass tpcc
