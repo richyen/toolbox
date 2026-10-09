@@ -6,6 +6,7 @@ ldap_server.key
 ldap_server.pem
 @eaDir
 .env
+**/results/
 
 # Terraform artifacts
 tf/.terraform/

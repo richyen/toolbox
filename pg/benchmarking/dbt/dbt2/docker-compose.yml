@@ -1,0 +1,40 @@
+services:
+  pg:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: dbt2
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "${PGPORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dbt2"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  dbt:
+    build:
+      context: ..
+      args:
+        DBT_KIT: dbt2
+        DBT_REF: ${DBT_REF:-main}
+    environment:
+      PGHOST: pg
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: dbt2
+      DBT2DBNAME: dbt2
+      DBT2PORT: 5432
+    depends_on:
+      pg:
+        condition: service_healthy
+    volumes:
+      - ./results:/results
+    command: ["sleep", "infinity"]
+
+volumes:
+  pgdata:

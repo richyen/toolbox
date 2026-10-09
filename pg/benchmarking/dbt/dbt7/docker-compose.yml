@@ -1,0 +1,40 @@
+services:
+  pg:
+    image: postgres:18
+    environment:
+      POSTGRES_DB: dbt7
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "${PGPORT:-5433}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dbt7"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  dbt:
+    build:
+      context: ..
+      args:
+        DBT_KIT: dbt7
+        DBT_REF: ${DBT_REF:-main}
+    environment:
+      PGHOST: pg
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: dbt7
+      DSHOME: /tools/tpcds
+    depends_on:
+      pg:
+        condition: service_healthy
+    volumes:
+      - ./results:/results
+      - ./tpcds-tools:/tools/tpcds:ro
+    command: ["sleep", "infinity"]
+
+volumes:
+  pgdata:
