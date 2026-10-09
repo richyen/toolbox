@@ -12,6 +12,15 @@ diset tpcc pg_dbase tpcc
 diset tpcc pg_user tpcc
 diset tpcc pg_pass tpcc
 
+if {[catch {
+    exec env PGPASSWORD=tpcc psql -X -h $env(PGHOST) -p $env(PGPORT) \
+      -U tpcc -d tpcc -v ON_ERROR_STOP=1 -Atqc {SELECT 1}
+} error]} {
+    puts stderr "Cannot connect to the TPROC-C database as tpcc. Run demo-scripts/build.tcl first."
+    puts stderr $error
+    exit 1
+}
+
 diset tpcc pg_driver timed
 diset tpcc pg_rampup 1
 diset tpcc pg_duration 2
