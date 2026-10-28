@@ -11,7 +11,7 @@ diset tpch pg_tpch_dbase tpch
 diset tpch pg_tpch_user tpch
 diset tpch pg_tpch_pass tpch
 diset tpch pg_total_querysets 1
-diset tpch pg_verbose true
+diset tpch pg_verbose false
 
 vuset vu 1
 
